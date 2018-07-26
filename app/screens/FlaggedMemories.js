@@ -14,19 +14,20 @@ export default class FlaggedMemories extends React.Component<Props> {
   }
 
   componentDidMount() {
-    AsyncStorage.getItem('memoryArray', (err, data) => {
+    /*AsyncStorage.getItem('memoryArray', (err, data) => {
       if(data) this.setState({'memoryArray': JSON.parse(data)});
-    });
+    });*/
   }
 
   render() {
-    let memories = this.state.memoryArray.map((val, key) => {
+    /*let memories = this.state.memoryArray.map((val, key) => {
       return <MemoryCard key={key} keyval={key} val={val} deleteMethod={() => this.deleteMemory(key) } />
-    });
+    });*/
 
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <Text>Screen 2!</Text>
+        {/* <View style={styles.header}>
           <TouchableOpacity style={styles.saveButton} onPress={ this.addMemory.bind(this) } >
             <Text style={styles.saveButtonText}>Add</Text>
           </TouchableOpacity>
@@ -43,7 +44,7 @@ export default class FlaggedMemories extends React.Component<Props> {
 
         <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('FirstScreen')} >
           <Text style={styles.newButtonText}>+</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   }
@@ -65,10 +66,10 @@ export default class FlaggedMemories extends React.Component<Props> {
     AsyncStorage.setItem('memoryArray', JSON.stringify(this.state.memoryArray));
   }
 
-  filterFlagsOnly() {
-    let flagged = (memory) => return memory.flag
+  /*filterFlagsOnly() {
+    let flagged = (memory) => { return memory.flag };
     this.state.memoryArray.
-  }
+  }*/
 
 }
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView, TouchableNativeFeedback } from 'react-native';
-import Memories from './app/screens/Memories';
-import NewMemory from './app/screens/NewMemory';
+import Memories from './screens/Memories';
+import NewMemory from './screens/NewMemory';
 
 export default class App extends Component<Props> {
   render() {
     return (
       <View style={{flex: 1}}>
+        <Text>Hey!</Text>
       <Memories />
 
         {/*<View style={styles.navbar}>

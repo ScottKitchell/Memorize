@@ -26,7 +26,8 @@ export default class User extends React.Component<Props> {
 
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
+        <Text>Screen 3</Text>
+        {/* <View style={styles.header}>
           <TouchableOpacity style={styles.saveButton} onPress={ this.addMemory.bind(this) } >
             <Text style={styles.saveButtonText}>Add</Text>
           </TouchableOpacity>
@@ -43,7 +44,7 @@ export default class User extends React.Component<Props> {
 
         <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('FirstScreen')} >
           <Text style={styles.newButtonText}>+</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   }
