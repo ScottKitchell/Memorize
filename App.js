@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView, TouchableNativeFeedback } from 'react-native';
-import Memories from './app/components/Memories';
-import NewMemory from './app/components/NewMemory';
+import Memories from './app/screens/Memories';
+import NewMemory from './app/screens/NewMemory';
 
 export default class App extends Component<Props> {
   render() {
@@ -9,7 +9,7 @@ export default class App extends Component<Props> {
       <View style={{flex: 1}}>
       <Memories />
 
-        <View style={styles.navbar}>
+        {/*<View style={styles.navbar}>
           <TouchableNativeFeedback onPress={this._onPressButton} background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Reflection</Text>
@@ -25,7 +25,7 @@ export default class App extends Component<Props> {
             <Text style={styles.buttonText}>Profile</Text>
           </View>
         </TouchableNativeFeedback>
-        </View>
+      </View>*/}
       </View>
     );
   }

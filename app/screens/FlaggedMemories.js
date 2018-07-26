@@ -1,9 +1,9 @@
 import React from 'react';
 import {Platform, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
-import MemoryCard from './MemoryCard';
+import MemoryCard from '../components/MemoryCard';
 
 type Props = {};
-export default class Memories extends React.Component<Props> {
+export default class FlaggedMemories extends React.Component<Props> {
 
   constructor(props){
     super(props);
@@ -26,18 +26,22 @@ export default class Memories extends React.Component<Props> {
 
     return (
       <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.saveButton} onPress={ this.addMemory.bind(this) } >
+            <Text style={styles.saveButtonText}>Add</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.memoryInput}>
-          <TextInput style={styles.textInput} placeholder="Search Memories" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
-            onChangeText={(memoryText) => this.setState({memoryText})} value={this.state.memoryText}>
-              {/*<ParsedText><Text style{{color: '#336699'}}>{this.setState({memoryText})}</Text></ParsedText>*/}
-            </TextInput>
+          <TextInput style={styles.textInput} placeholder="Remember" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
+            onChangeText={(memoryText) => this.setState({memoryText})} value={this.state.memoryText}></TextInput>
         </View>
 
         <ScrollView style={styles.body}>
           {memories}
         </ScrollView>
 
-        <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('New memory')} >
+        <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('FirstScreen')} >
           <Text style={styles.newButtonText}>+</Text>
         </TouchableOpacity>
       </View>
@@ -61,11 +65,22 @@ export default class Memories extends React.Component<Props> {
     AsyncStorage.setItem('memoryArray', JSON.stringify(this.state.memoryArray));
   }
 
+  filterFlagsOnly() {
+    let flagged = (memory) => return memory.flag
+    this.state.memoryArray.
+  }
+
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    padding: 4,
   },
   memoryInput: {
     backgroundColor: '#FFF',
@@ -75,9 +90,10 @@ const styles = StyleSheet.create({
   textInput: {
     alignSelf: 'stretch',
     textAlignVertical: 'top',
-    fontSize: 14,
+    fontSize: 16,
     color: '#555',
     padding: 20,
+    minHeight: 120,
     backgroundColor: '#FFF'
   },
   scrollContainer: {
@@ -87,6 +103,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     marginBottom: 64,
     //padding: 5
+  },
+  saveButton: {
+    height: 34,
+    width: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#5b10b0',
+    borderRadius: 17,
+  },
+  saveButtonText: {
+    color: '#FFF',
   },
   newButton: {
     position: 'absolute',

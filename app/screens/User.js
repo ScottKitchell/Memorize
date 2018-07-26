@@ -1,33 +1,27 @@
 import React from 'react';
 import {Platform, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
-import Hashtag from './Hashtag';
+import MemoryCard from '../components/MemoryCard';
 
 type Props = {};
-export default class NewMemory extends React.Component<Props> {
+export default class User extends React.Component<Props> {
 
   constructor(props){
     super(props);
     this.state = {
-      tagArray: ['shopping', 'work'],
+      memoryArray: [],
       memoryText: '',
-      memoryTags: [],
-      memoryFlags: [],
-      memoryFlagSet: false,
-      memoryDoneSet: false,
-      memoryForgetSet: false,
-      memoryCreatedAt: null
     }
   }
 
   componentDidMount() {
-    /*AsyncStorage.getItem('tagsArray', (err, data) => {
-      if(data) this.setState({'tagsArray': JSON.parse(data)});
-    });*/
+    AsyncStorage.getItem('memoryArray', (err, data) => {
+      if(data) this.setState({'memoryArray': JSON.parse(data)});
+    });
   }
 
   render() {
-    let tags = this.state.tagArray.map((tag) => {
-      return <Hashtag key={tag} tag={tag} onPress={() => this.insertTag(tag) } />
+    let memories = this.state.memoryArray.map((val, key) => {
+      return <MemoryCard key={key} keyval={key} val={val} deleteMethod={() => this.deleteMemory(key) } />
     });
 
     return (
@@ -38,15 +32,18 @@ export default class NewMemory extends React.Component<Props> {
           </TouchableOpacity>
         </View>
 
+        <View style={styles.memoryInput}>
+          <TextInput style={styles.textInput} placeholder="Remember" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
+            onChangeText={(memoryText) => this.setState({memoryText})} value={this.state.memoryText}></TextInput>
+        </View>
+
         <ScrollView style={styles.body}>
-          <View style={styles.memoryInput}>
-            <TextInput style={styles.textInput} placeholder="Remember" placeholderTextColor="#CCC" autoFocus={true} multiline={true} underlineColorAndroid="transparent"
-              onChangeText={(memoryText) => this.setState({memoryText})} value={this.state.memoryText}></TextInput>
-          </View>
-          <View style={styles.tagContainer}>
-            {tags}
-          </View>
+          {memories}
         </ScrollView>
+
+        <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('FirstScreen')} >
+          <Text style={styles.newButtonText}>+</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -54,16 +51,18 @@ export default class NewMemory extends React.Component<Props> {
   addMemory() {
     if(this.state.memoryText) {
       let d = new Date();
+      this.state.memoryArray.unshift({
+        memory: this.state.memoryText
+      });
       this.setState({'memoryArray': this.state.memoryArray, memoryText: ''});
       AsyncStorage.setItem('memoryArray', JSON.stringify(this.state.memoryArray));
     }
   }
 
-  insertTag(tag) {
-    this.setState({
-      'memoryText': this.state.memoryText + '#'+tag,
-      'memoryTags': [...this.state.memoryTags, tag ]
-    });
+  deleteMemory(key) {
+    this.state.memoryArray.splice(key, 1);
+    this.setState({'memoryArray': this.state.memoryArray});
+    AsyncStorage.setItem('memoryArray', JSON.stringify(this.state.memoryArray));
   }
 
 }
@@ -71,7 +70,6 @@ export default class NewMemory extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
   },
   header: {
     justifyContent: 'flex-end',
@@ -81,6 +79,8 @@ const styles = StyleSheet.create({
   },
   memoryInput: {
     backgroundColor: '#FFF',
+    borderBottomWidth: 3,
+    borderBottomColor: '#EEE',
   },
   textInput: {
     alignSelf: 'stretch',
@@ -88,9 +88,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
     padding: 20,
-    paddingBottom: 10,
-    minHeight: 100,
-    backgroundColor: '#FFF',
+    minHeight: 120,
+    backgroundColor: '#FFF'
   },
   scrollContainer: {
     flex: 1,
@@ -99,15 +98,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     marginBottom: 64,
     //padding: 5
-  },
-  tagContainer: {
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    flexDirection:'row',
-    padding: 20,
-    paddingTop: 0,
-    paddingBottom: 10,
-    backgroundColor: '#FFF',
   },
   saveButton: {
     height: 34,
