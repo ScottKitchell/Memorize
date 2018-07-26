@@ -1,71 +1,9 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView, TouchableNativeFeedback } from 'react-native';
-import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Memories from './app/components/Memories';
+import NewMemory from './app/components/NewMemory';
 
-class FirstScreen extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>First screen!</Text>
-      </View>
-    );
-  }
-}
-
-class SecondScreen extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Second screen!</Text>
-      </View>
-    );
-  }
-}
-
-class ThirdScreen extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Third screen!</Text>
-      </View>
-    );
-  }
-}
-
-const MemoriesStack = createStackNavigator({
-  Home: Memories,
-  Details: FirstScreen,
-});
-
-export default createBottomTabNavigator({
-  Memories: MemoriesStack,
-  Flags: { screen: SecondScreen },
-  User: { screen: ThirdScreen }
-},{
-  navigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName } = navigation.state;
-        let iconName;
-        if (routeName === 'Home') {
-          iconName = `ios-information-circle${focused ? '' : '-outline'}`;
-        } else if (routeName === 'Settings') {
-          iconName = `ios-options${focused ? '' : '-outline'}`;
-        }
-
-        // You can return any component that you like here! We usually use an
-        // icon component from react-native-vector-icons
-        return <Ionicons name={iconName} size={25} color={tintColor} />;
-      },
-    }),
-  tabBarOptions: {
-    activeTintColor: '#5b10b0',
-    inactiveTintColor: 'gray',
-    showIcon: false,
-  },
-});
-
-/*export default class App extends Component<Props> {
+export default class App extends Component<Props> {
   render() {
     return (
       <View style={{flex: 1}}>
@@ -91,7 +29,7 @@ export default createBottomTabNavigator({
       </View>
     );
   }
-}*/
+}
 
 const styles = StyleSheet.create({
   navbar: {
