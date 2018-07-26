@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
+import {Platform, Alert, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
 import Hashtag from './Hashtag';
 
 type Props = {};
@@ -53,9 +53,17 @@ export default class NewMemory extends React.Component<Props> {
 
   addMemory() {
     if(this.state.memoryText) {
-      let d = new Date();
-      this.setState({'memoryArray': this.state.memoryArray, memoryText: ''});
-      AsyncStorage.setItem('memoryArray', JSON.stringify(this.state.memoryArray));
+      let memoryArray = [];
+      AsyncStorage.getItem('memoryArray', (err, data) => {
+        if(data) memoryArray = JSON.parse(data);
+        else if(err) Alert.alert(err);
+
+        memoryArray.unshift({
+          memory: this.state.memoryText
+        });
+        AsyncStorage.setItem('memoryArray', JSON.stringify(memoryArray));
+        this.props.navigation.goBack();
+      });
     }
   }
 
