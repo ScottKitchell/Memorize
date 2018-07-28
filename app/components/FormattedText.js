@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type Props = {};
-export default class Hashtag extends React.Component<Props> {
+export default class FormattedText extends React.Component<Props> {
 
   constructor(props){
     super(props);
@@ -24,8 +24,8 @@ export default class Hashtag extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     padding: 6,
-    paddingLeft: 18,
-    paddingRight: 18,
+    paddingLeft: 12,
+    paddingRight: 12,
     borderRadius: 24,
     marginRight: 8,
   },
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EEE',
   },
   tagText: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#555',
   }
 });

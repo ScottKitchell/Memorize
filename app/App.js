@@ -2,65 +2,16 @@ import React from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView, TouchableNativeFeedback } from 'react-native';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Feather';
-import Memories from './components/Memories';
-import NewMemory from './components/NewMemory';
+import Memories from './screens/Memories';
+import FlaggedMemories from './screens/FlaggedMemories';
+import User from './screens/User';
+import EditMemory from './screens/EditMemory';
 
-class FirstScreen extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>First screen!</Text>
-      </View>
-    );
-  }
-}
 
-class SecondScreen extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Second screen!</Text>
-      </View>
-    );
-  }
-}
-
-class ThirdScreen extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text>Third screen!</Text>
-      </View>
-    );
-  }
-}
-
-const MemoriesStack = createStackNavigator({
-  Home: {
-    screen: Memories,
-    navigationOptions: {
-      title: 'Memories'
-    }
-  },
-  NewMemory: {
-    screen: NewMemory,
-    navigationOptions: ({ navigation }) => ({
-      title: 'New Memory',
-      tabBarVisible: false,
-    })
-  },
-},
-{
-  navigationOptions: {
-    header: null,
-    animationEnabled: true
-  }
-});
-
-export default createBottomTabNavigator({
-  Memories: { screen: MemoriesStack },
-  Flags: { screen: SecondScreen },
-  User: { screen: ThirdScreen }
+const TabNavigator = createBottomTabNavigator({
+  Memories: { screen: Memories },
+  Flags: { screen: FlaggedMemories },
+  Reflection: { screen: User }
 },
 {
   navigationOptions: ({ navigation }) => ({
@@ -68,60 +19,38 @@ export default createBottomTabNavigator({
       const { routeName } = navigation.state;
       let iconName;
       if (routeName === 'Memories') {
-        iconName = 'circle';
+        iconName = 'hash';
       } else if (routeName === 'Flags') {
         iconName = 'flag';
-      } else if (routeName === 'User') {
+      } else if (routeName === 'Reflection') {
         iconName = 'user';
       }
-
-      return <Icon name={iconName} size={30} color="#900" />;
-      //return <Text>what</Text>
+      return <Icon name={iconName} size={24} color={focused? '#BA2BF7':'#AAA'} />;
     },
   }),
   tabBarOptions: {
-    activeTintColor: '#5b10b0',
-    inactiveTintColor: 'gray',
-    showIcon: false,
+    activeTintColor: '#BA2BF7',
+    inactiveTintColor: '#AAA',
+    style: {
+      backgroundColor: '#FFF'
+    }
   },
 });
 
-/*export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={{flex: 1}}>
-      <Memories />
-        <View style={styles.navbar}>
-          <TouchableNativeFeedback onPress={this._onPressButton} background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Reflection</Text>
-            </View>
-          </TouchableNativeFeedback>
-        <TouchableNativeFeedback onPress={this._onPressButton} background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}>
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Memories</Text>
-          </View>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback onPress={this._onPressButton} background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}>
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Profile</Text>
-          </View>
-        </TouchableNativeFeedback>
-        </View>
-      </View>
-    );
-  }
-}*/
-
-const styles = StyleSheet.create({
-  navbar: {
-    backgroundColor: '#EEE',
-    flexDirection: 'row',
+const AppNavStack = createStackNavigator({
+  Tabs: TabNavigator,
+  EditMemory: {
+    screen: EditMemory,
+    navigationOptions: {
+      title: 'Edit Memory',
+    }
   },
-  button: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 65,
+},
+{
+  navigationOptions: {
+    header: null,
+    animationEnabled: true,
   }
 });
+
+export default AppNavStack;

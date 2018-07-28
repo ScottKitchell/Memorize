@@ -1,6 +1,7 @@
 import React from 'react';
 import {Platform, Alert, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button, StatusBar} from 'react-native';
-import MemoryCard from './MemoryCard';
+import Icon from 'react-native-vector-icons/Feather';
+import MemoryCard from '../components/MemoryCard';
 
 type Props = {};
 export default class Memories extends React.Component<Props> {
@@ -20,6 +21,7 @@ export default class Memories extends React.Component<Props> {
         if(data) this.setState({'memoryArray': JSON.parse(data)});
       });
     });
+    this.props.navigation.navigate('EditMemory');
   }
 
   render() {
@@ -45,8 +47,8 @@ export default class Memories extends React.Component<Props> {
 
         </ScrollView>
 
-        <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('NewMemory')} >
-          <Text style={styles.newButtonText}>+</Text>
+        <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('EditMemory')} >
+          <Icon name="plus" size={18} color='#FFF'/>
         </TouchableOpacity>
       </View>
     );
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#5b10b0',
+    backgroundColor: '#BA2BF7',
   },
   newButtonText: {
     fontSize: 22,

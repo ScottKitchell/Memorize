@@ -10,6 +10,7 @@
     "babel-preset-react-native": "^2.1.0",
     "react": "16.4.1",
     "react-native": "^0.55.4",
+    "react-native-parsed-text": "^0.0.20",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^2.9.2"
   },
