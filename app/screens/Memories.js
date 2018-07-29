@@ -27,7 +27,7 @@ export default class Memories extends React.Component<Props> {
 
   render() {
     let memories = this.state.memoryArray.map((memory, key) => {
-      return <MemoryListItem key={key} keyval={key} memory={memory} toggleDone={() => this.toggleDone(key)} toggleFlag={() => this.toggleFlag(key)} delete={() => this.deleteMemory(key,memory.text)}/>
+      return <MemoryListItem key={key} keyval={key} memory={memory} toggleDone={() => this.toggleDone(key)} toggleFlag={() => this.toggleFlag(key)} edit={() => this.editMemory(key)} delete={() => this.deleteMemory(key,memory.text)}/>
     });
 
     return (
@@ -76,6 +76,10 @@ export default class Memories extends React.Component<Props> {
     memory.done = toggleOn;
     //memory.text = toggleOn? memory.text+' !DONE' : memory.text.replace(/\s?\!DONE/g,'');
     this.setState({'memoryArray': memoryArray});
+  }
+
+  editMemory(key) {
+    this.props.navigation.navigate('EditMemory',this.state.memoryArray[key]);
   }
 
   deleteMemory(key, memoryText){

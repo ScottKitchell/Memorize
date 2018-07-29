@@ -36,6 +36,10 @@ export default class MemoryListItem extends React.Component<Props> {
             <Icon name="trash" style={styles.icon}/>
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.actionItem} onPress={this.props.edit}>
+            <Icon name="edit-3" style={styles.icon}/>
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.actionItem}  onPress={this.props.toggleFlag}>
             <Icon name="flag" style={[styles.icon, this.props.memory.flag? styles.selected : {}]}/>
           </TouchableOpacity>
@@ -95,7 +99,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   icon: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#C0C0C0',
   },
   selected: {
