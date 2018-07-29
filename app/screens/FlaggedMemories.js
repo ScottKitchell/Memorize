@@ -1,7 +1,7 @@
 import React from 'react';
 import {Platform, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import MemoryCard from '../components/MemoryCard';
+import MemoryListItem from '../components/MemoryListItem';
 
 type Props = {};
 export default class FlaggedMemories extends React.Component<Props> {
@@ -21,7 +21,7 @@ export default class FlaggedMemories extends React.Component<Props> {
 
   render() {
     // let memories = this.state.memoryArray.map((val, key) => {
-    //   return <MemoryCard key={key} keyval={key} val={val} deleteMethod={() => this.deleteMemory(key) } />
+    //   return <MemoryListItem key={key} keyval={key} val={val} deleteMethod={() => this.deleteMemory(key) } />
     // });
     //
     // return (

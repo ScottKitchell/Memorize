@@ -1,7 +1,7 @@
 import React from 'react';
-import {Platform, Alert, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button, StatusBar} from 'react-native';
+import {Platform, Alert, StyleSheet, AsyncStorage, View, ScrollView, FlatList, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import MemoryCard from '../components/MemoryCard';
+import MemoryListItem from '../components/MemoryListItem';
 
 type Props = {};
 export default class Memories extends React.Component<Props> {
@@ -27,7 +27,7 @@ export default class Memories extends React.Component<Props> {
 
   render() {
     let memories = this.state.memoryArray.map((memory, key) => {
-      return <MemoryCard key={key} keyval={key} memory={memory} deleteMemory={() => this.deleteMemory(key)}/>
+      return <MemoryListItem key={key} keyval={key} memory={memory} toggleDone={() => this.toggleDone(key)} toggleFlag={() => this.toggleFlag(key)} delete={() => this.deleteMemory(key,memory.text)}/>
     });
 
     return (
@@ -45,8 +45,13 @@ export default class Memories extends React.Component<Props> {
 
         <ScrollView style={styles.body}>
           {memories}
-
         </ScrollView>
+
+        {/* <FlatList style={styles.body} data={this.state.memoryArray}
+          renderItem={({memory, index}) => {
+            <MemoryListItem memory={memory} toggleDone={() => this.toggleDone(index)} toggleFlag={() => this.toggleFlag(index)} delete={() => this.deleteMemory(index)}/>
+          }}
+        /> */}
 
         <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('EditMemory')} >
           <Icon name="plus" size={18} color='#FFF'/>
@@ -55,8 +60,38 @@ export default class Memories extends React.Component<Props> {
     );
   }
 
-  deleteMemory(key) {
-    this.state.memoryArray.splice(key, 1);
+  toggleFlag(key) {
+    const toggleOn = !this.state.memoryArray[key].flag;
+    let memoryArray = Object.assign([], this.state.memoryArray);
+    let memory = memoryArray[key];
+    memory.flag = toggleOn;
+    memory.text = toggleOn? memory.text+' !FLAG' : memory.text.replace(/\s?\!FLAG/g,'');
+    this.setState({'memoryArray': memoryArray});
+  }
+
+  toggleDone(key) {
+    const toggleOn = !this.state.memoryArray[key].done;
+    let memoryArray = Object.assign([], this.state.memoryArray);
+    let memory = memoryArray[key];
+    memory.done = toggleOn;
+    memory.text = toggleOn? memory.text+' !DONE' : memory.text.replace(/\s?\!DONE/g,'');
+    this.setState({'memoryArray': memoryArray});
+  }
+
+  deleteMemory(key, memoryText){
+    Alert.alert(
+      'Delete this memory?',
+      memoryText,
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Delete', onPress: () => this.confirmDeleteMemory(key), style: 'destructive'},
+      ],
+      { cancelable: false }
+    );
+  }
+
+  confirmDeleteMemory(key) {
+    this.state.memoryArray.splice(key, 1); // TODO Change so not mutating state
     this.setState({'memoryArray': this.state.memoryArray});
     AsyncStorage.setItem('memoryArray', JSON.stringify(this.state.memoryArray));
   }
@@ -69,15 +104,15 @@ const styles = StyleSheet.create({
   },
   memoryInput: {
     backgroundColor: '#FFF',
-    borderBottomWidth: 3,
+    borderBottomWidth: 1,
     borderBottomColor: '#EEE',
   },
   textInput: {
     alignSelf: 'stretch',
     textAlignVertical: 'top',
-    fontSize: 14,
+    fontSize: 18,
     color: '#555',
-    padding: 20,
+    padding: 16,
     backgroundColor: '#FFF'
   },
   scrollContainer: {

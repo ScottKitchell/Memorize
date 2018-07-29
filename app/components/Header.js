@@ -14,7 +14,7 @@ export default class Header extends React.Component<Props> {
       <View style={styles.header} keyboardShouldPersistTaps="handled">
         <View>
           <TouchableOpacity style={styles.item} onPress={this.props.closeScreen} >
-            <Icon name="x" size={24} />
+            <Icon name="chevron-left" size={24} />
           </TouchableOpacity>
         </View>
 

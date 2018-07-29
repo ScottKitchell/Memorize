@@ -20,7 +20,7 @@ export default class User extends React.Component<Props> {
 
   render() {
     // let memories = this.state.memoryArray.map((val, key) => {
-    //   return <MemoryCard key={key} keyval={key} val={val} deleteMethod={() => this.deleteMemory(key) } />
+    //   return <MemoryListItem key={key} keyval={key} val={val} deleteMethod={() => this.deleteMemory(key) } />
     // });
     //
     // return (
