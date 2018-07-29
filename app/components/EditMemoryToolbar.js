@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   selected: {
-    color: '#BA2BF7',
+    color: '#DA22FF',
   },
   title: {
     padding: 8,

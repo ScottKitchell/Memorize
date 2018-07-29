@@ -13,19 +13,19 @@ export default class Header extends React.Component<Props> {
     return (
       <View style={styles.header} keyboardShouldPersistTaps="handled">
         <View>
-          <TouchableOpacity style={styles.item} onPress={this.props.closeScreen} >
-            <Icon name="chevron-left" size={24} />
+          <TouchableOpacity style={styles.item} onPress={this.props.goBack} >
+            <Icon name="arrow-left" style={styles.icon}/>
           </TouchableOpacity>
         </View>
 
         <View style={styles.title}>
-          <Text style={styles.titleText}>New Memory</Text>
+          <Text style={styles.titleText}>{this.props.title}</Text>
         </View>
 
         <View>
-          <TouchableOpacity style={styles.item} >
-            <Icon name="more-vertical" size={24} />
-          </TouchableOpacity>
+          {/* <TouchableOpacity style={styles.item} >
+            <Icon name="more-vertical" style={styles.icon}/>
+          </TouchableOpacity> */}
         </View>
       </View>
     );
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   itemText: {
-    color: '#BA2BF7',
+    color: '#444',
     fontSize: 18,
   },
   title: {
@@ -59,5 +59,10 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#444',
+  },
+  icon: {
+    fontSize: 24,
+    color: '#444',
   }
 });

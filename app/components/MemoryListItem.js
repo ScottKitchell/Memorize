@@ -12,11 +12,11 @@ export default class MemoryListItem extends React.Component<Props> {
 
   render() {
     const parseRules = [
-      // {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
+      {type: 'url',                       style: styles.urlText, onPress: this.handleUrlPress},
       // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
       // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
       {pattern: /#(\w+)/,                 style: styles.hashtagText},
-      {pattern: /!(FLAG|DONE|FORGET)/,    style: styles.metatagText},
+      //{pattern: /!(FLAG|DONE|FORGET)/,    style: styles.metatagText},
     ];
 
     return (
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   done: {
-    backgroundColor: '#EEE',
+    backgroundColor: '#F4F4F4',
   },
   memory: {
     flexDirection: 'row',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     color: '#C0C0C0',
   },
   selected: {
-    color: '#BA2BF7',
+    color: '#DA22FF',
   },
   cardDelete: {
     position: 'absolute',
@@ -115,6 +115,9 @@ const styles = StyleSheet.create({
   },
   hashtagText: {
     color: '#9733EE',
+  },
+  urlText: {
+    color: '#BBB',
   },
   metatagText: {
     color: '#DDD',

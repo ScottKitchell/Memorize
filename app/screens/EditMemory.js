@@ -36,16 +36,15 @@ export default class NewMemory extends React.Component<Props> {
     });
 
     const parseRules = [
-      // {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
+      {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
       // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
       // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
       {pattern: /#(\w+)/,                 style: styles.hashtagText},
-      {pattern: /!(FLAG|DONE|FORGET)/,    style: styles.metatagText},
     ];
 
     return (
       <View style={styles.container}>
-        <Header closeScreen={() => this.closeScreen()}/>
+        <Header title="New Memory" goBack={() => this.closeScreen()}/>
 
         <ScrollView style={styles.body} keyboardShouldPersistTaps="handled">
           <View style={styles.memoryInput}>
@@ -108,38 +107,20 @@ export default class NewMemory extends React.Component<Props> {
   insertTag(tag) {
     this.setState({
       'memoryText': this.state.memoryText + '#'+tag,
-      'memoryTags': [...this.state.memoryTags, tag ]
+      'memoryTags': [...this.state.memoryTags, tag]
     });
   }
 
   toggleFlag(toggleOn = !this.state.memoryFlag) {
-    if(toggleOn) {
-      this.setState({
-        'memoryText': this.state.memoryText + ' !FLAG',
-        'memoryFlag': true
-      });
-    } else {
-      let memoryText = this.state.memoryText.replace(/\s?\!FLAG/g,'');
-      this.setState({
-        'memoryText': memoryText,
-        'memoryFlag': false
-      });
-    }
+    this.setState({
+      'memoryFlag': toggleOn
+    });
   }
 
   toggleDone(toggleOn = !this.state.memoryDone) {
-    if(toggleOn) {
-      this.setState({
-        'memoryText': this.state.memoryText + ' !DONE',
-        'memoryDone': true,
-      });
-    } else {
-      let memoryText = this.state.memoryText.replace(/\s?\!DONE/g,'');
-      this.setState({
-        'memoryText': memoryText,
-        'memoryDone': false,
-      });
-    }
+    this.setState({
+      'memoryDone': toggleOn
+    });
   }
 
   closeScreen() {
@@ -168,7 +149,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     textAlignVertical: 'top',
     fontSize: 18,
-    color: '#555',
+    color: '#444',
     padding: 20,
     paddingBottom: 10,
     minHeight: 100,
@@ -185,6 +166,9 @@ const styles = StyleSheet.create({
   },
   hashtagText: {
     color: '#9733EE',
+  },
+  urlText: {
+    color: '#BBB',
   },
   metatagText: {
     color: '#DDD',

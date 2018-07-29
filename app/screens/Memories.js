@@ -65,7 +65,7 @@ export default class Memories extends React.Component<Props> {
     let memoryArray = Object.assign([], this.state.memoryArray);
     let memory = memoryArray[key];
     memory.flag = toggleOn;
-    memory.text = toggleOn? memory.text+' !FLAG' : memory.text.replace(/\s?\!FLAG/g,'');
+    //memory.text = toggleOn? memory.text+' !FLAG' : memory.text.replace(/\s?\!FLAG/g,'');
     this.setState({'memoryArray': memoryArray});
   }
 
@@ -74,7 +74,7 @@ export default class Memories extends React.Component<Props> {
     let memoryArray = Object.assign([], this.state.memoryArray);
     let memory = memoryArray[key];
     memory.done = toggleOn;
-    memory.text = toggleOn? memory.text+' !DONE' : memory.text.replace(/\s?\!DONE/g,'');
+    //memory.text = toggleOn? memory.text+' !DONE' : memory.text.replace(/\s?\!DONE/g,'');
     this.setState({'memoryArray': memoryArray});
   }
 
