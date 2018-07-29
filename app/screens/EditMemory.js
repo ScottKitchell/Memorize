@@ -13,7 +13,6 @@ const initialState = {
   memoryFlags: [],
   memoryFlag: false,
   memoryDone: false,
-  memoryForget: false,
   memoryCreatedAt: null
 };
 
@@ -74,14 +73,22 @@ export default class NewMemory extends React.Component<Props> {
 
   saveMemory() {
     if(this.state.memoryText) {
+      let memory = {
+        text: this.state.memoryText,
+        tags: [],
+        flags: [],
+        flag: this.state.memoryFlag,
+        done: this.state.memoryDone,
+        archive: false,
+        createdAt: new Date()
+      };
+
       let memoryArray = [];
       AsyncStorage.getItem('memoryArray', (err, data) => {
         if(data) memoryArray = JSON.parse(data);
         else if(err) Alert.alert(err);
 
-        memoryArray.unshift({
-          memory: this.state.memoryText
-        });
+        memoryArray.unshift(memory);
         AsyncStorage.setItem('memoryArray', JSON.stringify(memoryArray), (err) => {
           if(err) ToastAndroid.showWithGravity('Error saving memory...', ToastAndroid.SHORT, ToastAndroid.CENTER);
           else {

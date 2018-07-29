@@ -10,9 +10,19 @@ export default class MemoryCard extends React.Component<Props> {
   }
 
   render() {
+    const parseRules = [
+      // {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
+      // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
+      // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
+      {pattern: /#(\w+)/,                 style: styles.hashtagText},
+      {pattern: /!(FLAG|DONE|FORGET)/,    style: styles.metatagText},
+    ];
+    
     return (
       <View key={this.props.keyval} style={styles.card}>
-        <Text style={styles.cardText}>{this.props.val.memory}</Text>
+        <ParsedText style={styles.cardText} parse={parseRules} childrenProps={{allowFontScaling: false}}>
+          {this.props.memory.text}
+        </ParsedText>
 
         <TouchableOpacity onPress={this.props.deleteMethod} style={styles.cardDelete}>
           <Text style={styles.cardDeleteText}>x</Text>
@@ -47,5 +57,14 @@ const styles = StyleSheet.create({
   },
   cardDeleteText: {
     color: '#555'
+  },
+  hashtagText: {
+    color: '#9733EE',
+  },
+  metatagText: {
+    color: '#DDD',
+  },
+  flagText: {
+    color: '#DA22FF',
   }
 });

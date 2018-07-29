@@ -15,6 +15,7 @@ export default class Memories extends React.Component<Props> {
   }
 
   componentDidMount() {
+    //AsyncStorage.removeItem('memoryArray'); // For development only to remove all stored memories
     const { navigation } = this.props;
     navigation.addListener('willFocus', () => {
       AsyncStorage.getItem('memoryArray', (err, data) => {
@@ -25,8 +26,8 @@ export default class Memories extends React.Component<Props> {
   }
 
   render() {
-    let memories = this.state.memoryArray.map((val, key) => {
-      return <MemoryCard key={key} keyval={key} val={val} deleteMethod={() => this.deleteMemory(key) } />
+    let memories = this.state.memoryArray.map((memory, key) => {
+      return <MemoryCard key={key} keyval={key} memory={memory} deleteMemory={() => this.deleteMemory(key)}/>
     });
 
     return (
