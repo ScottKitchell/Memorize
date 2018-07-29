@@ -3,22 +3,26 @@ import {Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, Scr
 import ParsedText from 'react-native-parsed-text';
 import Icon from 'react-native-vector-icons/Feather';
 import Hashtag from '../components/Hashtag';
+import Header from '../components/Header';
+import EditMemoryToolbar from '../components/EditMemoryToolbar';
+
+const initialState = {
+  tagArray: ['shopping', 'work'],
+  memoryText: '',
+  memoryTags: [],
+  memoryFlags: [],
+  memoryFlag: false,
+  memoryDone: false,
+  memoryForget: false,
+  memoryCreatedAt: null
+};
 
 type Props = {};
 export default class NewMemory extends React.Component<Props> {
 
   constructor(props){
     super(props);
-    this.state = {
-      tagArray: ['shopping', 'work'],
-      memoryText: '',
-      memoryTags: [],
-      memoryFlags: [],
-      memoryFlagSet: false,
-      memoryDoneSet: false,
-      memoryForgetSet: false,
-      memoryCreatedAt: null
-    }
+    this.state = initialState;
   }
 
   componentDidMount() {
@@ -33,15 +37,17 @@ export default class NewMemory extends React.Component<Props> {
     });
 
     const parseRules = [
-      {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
-      {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
-      {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
-      {pattern: /#(\w+)/,                 style: styles.hashtag},
-      {pattern: /!(FLAG|DONE|FORGET)/,    style: styles.metatag},
+      // {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
+      // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
+      // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
+      {pattern: /#(\w+)/,                 style: styles.hashtagText},
+      {pattern: /!(FLAG|DONE|FORGET)/,    style: styles.metatagText},
     ];
 
     return (
       <View style={styles.container}>
+        <Header closeScreen={() => this.closeScreen()}/>
+
         <ScrollView style={styles.body} keyboardShouldPersistTaps="handled">
           <View style={styles.memoryInput}>
             <TextInput style={styles.textInput} placeholder="#Call mum back" placeholderTextColor="#CCC" autoFocus={true} multiline={true} underlineColorAndroid="transparent"
@@ -51,31 +57,22 @@ export default class NewMemory extends React.Component<Props> {
                 </ParsedText>
               </TextInput>
           </View>
+
           <View style={styles.tagContainer}>
             {tags}
           </View>
+
+          <View>
+
+          </View>
         </ScrollView>
 
-        <View style={styles.toolbar} keyboardShouldPersistTaps="handled">
-          <View style={{width:90}}>
-            <TouchableOpacity style={styles.closeButton} onPress={this.closeScreen.bind(this)} >
-              <Icon name="x" size={18} />
-            </TouchableOpacity>
-          </View>
-          <View style={{flex:1}}>
-            <Text style={styles.title}>New memory</Text>
-          </View>
-          <View style={{width:90}}>
-            <TouchableOpacity style={styles.saveButton} onPress={this.addMemory.bind(this)} >
-              <Text style={styles.saveButtonText}>Add</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <EditMemoryToolbar flag={this.state.memoryFlag} done={this.state.memoryDone} toggleFlag={() => this.toggleFlag()} toggleDone={() => this.toggleDone()} save={() => this.saveMemory()}/>
       </View>
     );
   }
 
-  addMemory() {
+  saveMemory() {
     if(this.state.memoryText) {
       let memoryArray = [];
       AsyncStorage.getItem('memoryArray', (err, data) => {
@@ -88,7 +85,7 @@ export default class NewMemory extends React.Component<Props> {
         AsyncStorage.setItem('memoryArray', JSON.stringify(memoryArray), (err) => {
           if(err) ToastAndroid.showWithGravity('Error saving memory...', ToastAndroid.SHORT, ToastAndroid.CENTER);
           else {
-            this.setState({memoryText: ''});
+            this.resetState();
             ToastAndroid.showWithGravity('Memory saved', ToastAndroid.SHORT, ToastAndroid.CENTER);
           }
         });
@@ -97,11 +94,45 @@ export default class NewMemory extends React.Component<Props> {
     }
   }
 
+  resetState() {
+    this.setState(initialState);
+  }
+
   insertTag(tag) {
     this.setState({
       'memoryText': this.state.memoryText + '#'+tag,
       'memoryTags': [...this.state.memoryTags, tag ]
     });
+  }
+
+  toggleFlag(toggleOn = !this.state.memoryFlag) {
+    if(toggleOn) {
+      this.setState({
+        'memoryText': this.state.memoryText + ' !FLAG',
+        'memoryFlag': true
+      });
+    } else {
+      let memoryText = this.state.memoryText.replace(/\s?\!FLAG/g,'');
+      this.setState({
+        'memoryText': memoryText,
+        'memoryFlag': false
+      });
+    }
+  }
+
+  toggleDone(toggleOn = !this.state.memoryDone) {
+    if(toggleOn) {
+      this.setState({
+        'memoryText': this.state.memoryText + ' !DONE',
+        'memoryDone': true,
+      });
+    } else {
+      let memoryText = this.state.memoryText.replace(/\s?\!DONE/g,'');
+      this.setState({
+        'memoryText': memoryText,
+        'memoryDone': false,
+      });
+    }
   }
 
   closeScreen() {
@@ -115,24 +146,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF',
   },
-  toolbar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 68,
-    flexDirection: 'row',
-    alignItems: 'center',
+  scrollContainer: {
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#FFF',
-    borderTopWidth: 1,
-    borderTopColor: '#EEE',
-    padding: 4,
-    paddingLeft: 12,
-    paddingRight: 12,
+    marginBottom: 64,
+    //padding: 5
   },
   memoryInput: {
-    paddingTop: 10,
     backgroundColor: '#FFF',
   },
   textInput: {
@@ -145,14 +167,6 @@ const styles = StyleSheet.create({
     minHeight: 100,
     backgroundColor: '#FFF',
   },
-  scrollContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    marginBottom: 64,
-    //padding: 5
-  },
   tagContainer: {
     flexWrap: 'wrap',
     alignItems: 'flex-start',
@@ -162,30 +176,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     backgroundColor: '#FFF',
   },
-  saveButton: {
-    padding: 8,
-    alignSelf: 'flex-end',
-  },
-  saveButtonText: {
-    color: '#BA2BF7',
-    fontSize: 18,
-  },
-  closeButton: {
-    padding: 8,
-    alignSelf: 'flex-start',
-  },
-  title: {
-    padding: 8,
-    alignSelf: 'center',
-    fontSize: 18,
-  },
-  hashtag: {
+  hashtagText: {
     color: '#9733EE',
   },
-  metatag: {
+  metatagText: {
     color: '#DDD',
   },
-  flag: {
+  flagText: {
     color: '#DA22FF',
   }
 });

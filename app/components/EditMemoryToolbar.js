@@ -1,42 +1,74 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 
 type Props = {};
 export default class EditMemoryToolbar extends React.Component<Props> {
 
   constructor(props){
     super(props);
-    this.state = {
-      selected: this.props.selected | false,
-    }
   }
 
   render() {
     return (
-      <TouchableOpacity key={this.props.tag} style={[styles.container, this.state.selected? styles.selected : styles.unselected]} onPress={this.props.onPress}>
-        <Text style={styles.tagText}>#{this.props.tag}</Text>
-      </TouchableOpacity>
+      <View style={styles.toolbar} keyboardShouldPersistTaps="always">
+        <View>
+          <TouchableOpacity style={styles.item} onPress={this.props.toggleFlag} >
+            <Icon name="flag" size={24} style={this.props.flag? styles.selected : {}}/>
+          </TouchableOpacity>
+        </View>
+
+        <View>
+          <TouchableOpacity style={styles.item} onPress={this.props.toggleDone} >
+            <Icon name="check-square" size={24} style={this.props.done? styles.selected : {}}/>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{flex:1}}>
+
+        </View>
+
+        <View>
+          <TouchableOpacity style={styles.item} onPress={this.props.save} >
+            <Text style={styles.itemText}>Done</Text>
+            {/* <Icon name="save" size={24} color='#BA2BF7'/> */}
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   }
 
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 6,
-    paddingLeft: 12,
-    paddingRight: 12,
-    borderRadius: 24,
-    marginRight: 8,
+  toolbar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 56,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF',
+    borderTopWidth: 1,
+    borderTopColor: '#EEE',
+    padding: 4,
+  },
+  item: {
+    margin: 4,
+    padding: 8,
+  },
+  itemText: {
+    color: '#BA2BF7',
+    fontSize: 18,
   },
   selected: {
-    backgroundColor: '#CCC',
+    color: '#BA2BF7',
   },
-  unselected: {
-    backgroundColor: '#EEE',
-  },
-  tagText: {
-    fontSize: 14,
-    color: '#555',
+  title: {
+    padding: 8,
+    alignSelf: 'center',
+    fontSize: 18,
   }
 });
