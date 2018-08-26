@@ -1,16 +1,18 @@
 import React from 'react';
 import {Platform, Alert, StyleSheet, AsyncStorage, View, ScrollView, FlatList, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import _ from 'lodash';
 import MemoryListItem from '../components/MemoryListItem';
+import MemoryStore from '../store/memory.store';
 
-type Props = {};
-export default class Memories extends React.Component<Props> {
+export default class Memories extends React.Component {
 
   constructor(props){
     super(props);
     this.state = {
       memoryArray: [],
-      memoryText: '',
+      initialMemoryArray: [],
+      searchTerm: '',
     }
   }
 
@@ -18,86 +20,94 @@ export default class Memories extends React.Component<Props> {
     //AsyncStorage.removeItem('memoryArray'); // For development only to remove all stored memories
     const { navigation } = this.props;
     navigation.addListener('willFocus', () => {
-      AsyncStorage.getItem('memoryArray', (err, data) => {
-        if(data) this.setState({'memoryArray': JSON.parse(data)});
+      MemoryStore.getAll().then(memories => {
+        this.setState({'memoryArray': memories, initialMemoryArray: memories});
       });
     });
     this.props.navigation.navigate('EditMemory');
   }
 
-  render() {
-    let memories = this.state.memoryArray.map((memory, key) => {
-      return <MemoryListItem key={key} keyval={key} memory={memory} toggleDone={() => this.toggleDone(key)} toggleFlag={() => this.toggleFlag(key)} edit={() => this.editMemory(key)} delete={() => this.deleteMemory(key,memory.text)}/>
-    });
+  toggleFlag = (id) => {
+    this._toggle(id,'flag');
+  }
 
+  toggleDone = (id) => {
+    this._toggle(id,'done');
+  }
+
+  _toggle = (id,key) => {
+    let memoryArray = (Object.assign([], this.state.memoryArray));
+    let memory = memoryArray[id];
+    memory[key] = !memory[key];
+    MemoryStore.update(id, memory);
+    this.setState({'memoryArray': memoryArray});
+  }
+
+  editMemory = (id) => {
+    this.props.navigation.navigate('EditMemory', {id});
+  }
+
+  deleteMemory = (id, memoryText) => {
+    Alert.alert(
+      'Delete this memory?',
+      memoryText,
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Delete', onPress: () => this._deleteMemory(id), style: 'destructive'},
+      ],
+      { cancelable: false }
+    );
+  }
+
+  _deleteMemory = (id) => {
+    let memoryArray = (Object.assign([], this.state.memoryArray));
+    memoryArray.splice(id, 1);
+    MemoryStore.delete(id);
+    this.setState({'memoryArray': this.state.memoryArray});
+  }
+
+  search = (searchTerm) => {
+    this.setState({searchTerm});
+    const memoryArray = _.filter(this.state.initialMemoryArray, memory => String(memory.text).includes(searchTerm));
+    this.setState({memoryArray});
+  }
+
+  render() {
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#FFF" barStyle="dark-content"/>
         <View style={styles.memoryInput}>
           <TextInput style={styles.textInput} placeholder="Search Memories" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
-            onChangeText={(memoryText) => this.setState({memoryText})} value={this.state.memoryText}>
+            onChangeText={this.search} value={this.state.searchTerm}>
               {/*<ParsedText><Text style{{color: '#336699'}}>{this.setState({memoryText})}</Text></ParsedText>*/}
           </TextInput>
         </View>
         <View>
-
+          
         </View>
 
-        <ScrollView style={styles.body}>
-          {memories}
-        </ScrollView>
-
-        {/* <FlatList style={styles.body} data={this.state.memoryArray}
-          renderItem={({memory, index}) => {
-            <MemoryListItem memory={memory} toggleDone={() => this.toggleDone(index)} toggleFlag={() => this.toggleFlag(index)} delete={() => this.deleteMemory(index)}/>
-          }}
-        /> */}
+        <FlatList
+          style={styles.body}
+          data={this.state.memoryArray}
+          extraData={this.state}
+          renderItem={({item, index}) => (
+            <MemoryListItem
+              key={index}
+              id={index}
+              memory={item}
+              toggleDone={this.toggleDone}
+              toggleFlag={this.toggleFlag}
+              edit={this.editMemory}
+              delete={this.deleteMemory}
+            />
+          )}
+        />
 
         <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('EditMemory')} >
           <Icon name="plus" size={18} color='#FFF'/>
         </TouchableOpacity>
       </View>
     );
-  }
-
-  toggleFlag(key) {
-    const toggleOn = !this.state.memoryArray[key].flag;
-    let memoryArray = Object.assign([], this.state.memoryArray);
-    let memory = memoryArray[key];
-    memory.flag = toggleOn;
-    //memory.text = toggleOn? memory.text+' !FLAG' : memory.text.replace(/\s?\!FLAG/g,'');
-    this.setState({'memoryArray': memoryArray});
-  }
-
-  toggleDone(key) {
-    const toggleOn = !this.state.memoryArray[key].done;
-    let memoryArray = Object.assign([], this.state.memoryArray);
-    let memory = memoryArray[key];
-    memory.done = toggleOn;
-    //memory.text = toggleOn? memory.text+' !DONE' : memory.text.replace(/\s?\!DONE/g,'');
-    this.setState({'memoryArray': memoryArray});
-  }
-
-  editMemory(key) {
-    this.props.navigation.navigate('EditMemory',this.state.memoryArray[key]);
-  }
-
-  deleteMemory(key, memoryText){
-    Alert.alert(
-      'Delete this memory?',
-      memoryText,
-      [
-        {text: 'Cancel', style: 'cancel'},
-        {text: 'Delete', onPress: () => this.confirmDeleteMemory(key), style: 'destructive'},
-      ],
-      { cancelable: false }
-    );
-  }
-
-  confirmDeleteMemory(key) {
-    this.state.memoryArray.splice(key, 1); // TODO Change so not mutating state
-    this.setState({'memoryArray': this.state.memoryArray});
-    AsyncStorage.setItem('memoryArray', JSON.stringify(this.state.memoryArray));
   }
 
 }

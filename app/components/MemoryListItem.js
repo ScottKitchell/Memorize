@@ -1,16 +1,28 @@
 import React from 'react';
 import {Platform, StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
+import PropTypes from 'prop-types';
 import ParsedText from 'react-native-parsed-text';
 import Icon from 'react-native-vector-icons/Feather';
 
-type Props = {};
-export default class MemoryListItem extends React.Component<Props> {
+export default class MemoryListItem extends React.Component {
+
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    memory: PropTypes.object.isRequired,
+    toggleDone: PropTypes.func.isRequired,
+    toggleFlag: PropTypes.func.isRequired,
+    edit: PropTypes.func.isRequired,
+    delete: PropTypes.func.isRequired
+  }
 
   constructor(props){
     super(props);
   }
 
   render() {
+    const id = this.props.id;
+    const memory = this.props.memory;
+
     const parseRules = [
       {type: 'url',                       style: styles.urlText, onPress: this.handleUrlPress},
       // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
@@ -20,28 +32,28 @@ export default class MemoryListItem extends React.Component<Props> {
     ];
 
     return (
-      <View key={this.props.keyval} style={[styles.listItem, this.props.memory.done? styles.done : {}]}>
+      <View key={this.props.id} style={[styles.listItem, memory.done? styles.done : {}]}>
         <View style={styles.memory}>
           <ParsedText style={styles.memoryText} parse={parseRules} childrenProps={{allowFontScaling: false}}>
-            {this.props.memory.text}
+            {memory.text}
           </ParsedText>
 
-          <TouchableOpacity style={styles.memoryDone} onPress={this.props.toggleDone}>
-            <Icon name={this.props.memory.done? 'check-square' : 'square'} style={[styles.memoryDoneIcon, this.props.memory.done? styles.selected : {}]}/>
+          <TouchableOpacity style={styles.memoryDone} onPress={() => this.props.toggleDone(id)}>
+            <Icon name={memory.done? 'check-square' : 'square'} style={[styles.memoryDoneIcon, memory.done? styles.selected : {}]}/>
           </TouchableOpacity>
         </View>
 
         <View style={styles.actions}>
-          <TouchableOpacity style={styles.actionItem} onPress={this.props.delete}>
+          <TouchableOpacity style={styles.actionItem} onPress={() => this.props.delete(id, memory.text)}>
             <Icon name="trash" style={styles.icon}/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionItem} onPress={this.props.edit}>
+          <TouchableOpacity style={styles.actionItem} onPress={() => this.props.edit(id)}>
             <Icon name="edit-3" style={styles.icon}/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionItem}  onPress={this.props.toggleFlag}>
-            <Icon name="flag" style={[styles.icon, this.props.memory.flag? styles.selected : {}]}/>
+          <TouchableOpacity style={styles.actionItem}  onPress={() => this.props.toggleFlag(id)}>
+            <Icon name="flag" style={[styles.icon, memory.flag? styles.selected : {}]}/>
           </TouchableOpacity>
 
           <View style={{flex:1}}>

@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "babel-preset-react-native": "^2.1.0",
+    "lodash": "^4.17.10",
+    "prop-types": "^15.6.2",
     "react": "16.4.1",
     "react-native": "^0.55.4",
     "react-native-parsed-text": "^0.0.20",

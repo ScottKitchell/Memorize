@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import Hashtag from '../components/Hashtag';
 import Header from '../components/Header';
 import EditMemoryToolbar from '../components/EditMemoryToolbar';
+import { pushMemory, getMemory, updateMemory } from '../store/memory.store';
 
 const initialState = {
   tagArray: ['shopping', 'work'],
@@ -21,83 +22,59 @@ export default class NewMemory extends React.Component<Props> {
 
   constructor(props){
     super(props);
-    this.state = initialState;
+    this.state = {
+      ...initialState,
+      isEditing: false
+    };
   }
 
   componentDidMount() {
-    /*AsyncStorage.getItem('tagsArray', (err, data) => {
-      if(data) this.setState({'tagsArray': JSON.parse(data)});
-    });*/
-  }
-
-  render() {
-    let tags = this.state.tagArray.map((tag) => {
-      return <Hashtag key={tag} tag={tag} onPress={() => this.insertTag(tag) } />
-    });
-
-    const parseRules = [
-      {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
-      // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
-      // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
-      {pattern: /#(\w+)/,                 style: styles.hashtagText},
-    ];
-
-    return (
-      <View style={styles.container}>
-        <Header title="New Memory" goBack={() => this.closeScreen()}/>
-
-        <ScrollView style={styles.body} keyboardShouldPersistTaps="handled">
-          <View style={styles.memoryInput}>
-            <TextInput style={styles.textInput} placeholder="#Call mum back" placeholderTextColor="#CCC" autoFocus={true} multiline={true} underlineColorAndroid="transparent"
-              onChangeText={(memoryText) => this.setState({memoryText})}>
-              <ParsedText style={styles.text} parse={parseRules} childrenProps={{allowFontScaling: false}}>
-                  {this.state.memoryText}
-                </ParsedText>
-              </TextInput>
-          </View>
-
-          <View style={styles.tagContainer}>
-            {tags}
-          </View>
-
-          <View>
-
-          </View>
-        </ScrollView>
-
-        <EditMemoryToolbar flag={this.state.memoryFlag} done={this.state.memoryDone} toggleFlag={() => this.toggleFlag()} toggleDone={() => this.toggleDone()} save={() => this.saveMemory()}/>
-      </View>
-    );
+    const id = this.props.navigation.getParam('id', -1);
+    if(id>=0) {
+      this.setState({isEditing: true});
+      getMemory(id).then(memory => {
+        this.setState({
+          memoryText: memory.text,
+          memoryFlag: memory.flag,
+          memoryDone: memory.done,
+          memoryCreatedAt: memory.createdAt,
+        });
+      });
+    }
   }
 
   saveMemory() {
-    if(this.state.memoryText) {
-      let memory = {
-        text: this.state.memoryText,
-        tags: [],
-        flags: [],
-        flag: this.state.memoryFlag,
-        done: this.state.memoryDone,
-        archive: false,
-        createdAt: new Date()
-      };
-
-      let memoryArray = [];
-      AsyncStorage.getItem('memoryArray', (err, data) => {
-        if(data) memoryArray = JSON.parse(data);
-        else if(err) Alert.alert(err);
-
-        memoryArray.unshift(memory);
-        AsyncStorage.setItem('memoryArray', JSON.stringify(memoryArray), (err) => {
-          if(err) ToastAndroid.showWithGravity('Error saving memory...', ToastAndroid.SHORT, ToastAndroid.CENTER);
-          else {
-            this.resetState();
-            ToastAndroid.showWithGravity('Memory saved', ToastAndroid.SHORT, ToastAndroid.CENTER);
-          }
-        });
-        //this.props.navigation.goBack();
+    if(!this.state.memoryText) return;
+    let memory = {
+      text: this.state.memoryText,
+      tags: [],
+      flags: [],
+      flag: this.state.memoryFlag,
+      done: this.state.memoryDone,
+      archive: false,
+      createdAt: new Date()
+    };
+    if(this.state.isEditing) {
+      const {id} = this.props.navigation.state.params;
+      updateMemory(id, memory).then(()=>{
+        this.savedToast();
+        this.closeScreen();
+      }).catch((err)=>{
+        Alert.alert(err);
+      });
+    } else {
+      pushMemory(memory).then(()=>{
+        this.savedToast();
+        this.resetState();
+      }).catch((err)=>{
+        Alert.alert(err);
       });
     }
+
+  }
+
+  savedToast(){
+    ToastAndroid.showWithGravity('Memory saved', ToastAndroid.SHORT, ToastAndroid.CENTER);
   }
 
   resetState() {
@@ -125,6 +102,49 @@ export default class NewMemory extends React.Component<Props> {
 
   closeScreen() {
     this.props.navigation.goBack();
+  }
+
+  render() {
+    let tags = this.state.tagArray.map((tag) => {
+      return <Hashtag key={tag} tag={tag} onPress={() => this.insertTag(tag) } />
+    });
+
+    const parseRules = [
+      {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
+      // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
+      // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
+      {pattern: /#(\w+)/,                 style: styles.hashtagText},
+    ];
+
+    return (
+      <View style={styles.container}>
+        <Header
+          title={this.state.isEditing? "Edit Memory" : "New Memory"}
+          goBack={() => this.closeScreen()}
+        />
+
+        <ScrollView style={styles.body} keyboardShouldPersistTaps="handled">
+          <View style={styles.memoryInput}>
+            <TextInput style={styles.textInput} placeholder="#Call mum back" placeholderTextColor="#CCC" autoFocus={true} multiline={true} underlineColorAndroid="transparent"
+              onChangeText={(memoryText) => this.setState({memoryText})}>
+              <ParsedText style={styles.text} parse={parseRules} childrenProps={{allowFontScaling: false}}>
+                  {this.state.memoryText}
+                </ParsedText>
+              </TextInput>
+          </View>
+
+          <View style={styles.tagContainer}>
+            {tags}
+          </View>
+
+          <View>
+
+          </View>
+        </ScrollView>
+
+        <EditMemoryToolbar flag={this.state.memoryFlag} done={this.state.memoryDone} toggleFlag={() => this.toggleFlag()} toggleDone={() => this.toggleDone()} save={() => this.saveMemory()}/>
+      </View>
+    );
   }
 
 }

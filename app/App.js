@@ -19,7 +19,7 @@ const TabNavigator = createBottomTabNavigator({
       const { routeName } = navigation.state;
       let iconName;
       if (routeName === 'Memories') {
-        iconName = 'hash';
+        iconName = 'calendar';
       } else if (routeName === 'Flags') {
         iconName = 'flag';
       } else if (routeName === 'Reflection') {
