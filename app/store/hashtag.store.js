@@ -12,18 +12,21 @@ export function getHashtags(resCB) {
         const hashtags = JSON.parse(data);
         if(resCB) resCB(hashtags, null);
         resProm(hashtags);
+      } else {
+        if(resCB) resCB({}, null);
+        resProm({});
       }
     });
   });
 }
 
-export function increamentHashtag(tag, resCB) {
+export function addHashtag(tag, resCB) {
   return incrementHashtags([tag], (tags, error) => {
     if(resCB) resCB(tags, error);
   });
 }
 
-export function incrementHashtags(tags, resCB) {
+export function addHashtags(tags, resCB) {
   return new Promise((resProm, errProm) => {
     AsyncStorage.getItem(HASHTAGS, (error, data) => {
       if(error) {
@@ -32,7 +35,8 @@ export function incrementHashtags(tags, resCB) {
       } else if(data) {
         let hashtags = JSON.parse(data);
         _.forEach(tags, (tag) => {
-          hashtags[tag] = hashtags[tag]? hashtags[tag]+1 : 1;
+          const lowTag = tag.toLowerCase();
+          hashtags[lowTag] = hashtags[lowTag]? hashtags[lowTag]+1 : 1;
         });
         AsyncStorage.setItem(HASHTAGS, JSON.stringify(hashtags), (error) => {
           if(error) {
@@ -48,8 +52,50 @@ export function incrementHashtags(tags, resCB) {
   });
 }
 
+export function subtractHashtags(tags, resCB) {
+  return new Promise((resProm, errProm) => {
+    AsyncStorage.getItem(HASHTAGS, (error, data) => {
+      if(error) {
+        if(resCB) resCB(null, error);
+        errProm(error);
+      } else if(data) {
+        let hashtags = JSON.parse(data);
+        _.forEach(tags, (tag) => {
+          const lowTag = tag.toLowerCase();
+          if(hashtags[lowTag]) hashtags[lowTag]--;
+        });
+        AsyncStorage.setItem(HASHTAGS, JSON.stringify(hashtags), (error) => {
+          if(error) {
+            if(resCB) resCB(hashtags, error);
+            errProm(error);
+          } else {
+            if(resCB) resCB(hashtags, null);
+            resProm(hashtags);
+          }
+        });
+      }
+    });
+  });
+}
+
+export function nukeHashtags(resCB) {
+  return new Promise((resProm, errProm) => {
+    AsyncStorage.removeItem(HASHTAGS, (error) => {
+      if(error) {
+        if(resCB) resCB({}, error);
+        errProm(error);
+      } else {
+        if(resCB) resCB({}, null);
+        resProm({});
+      }
+    });
+  });
+}
+
 export default {
   getAll: getHashtags,
-  increament: incrementHashtags,
-  increamentOne: incrementHashtag
+  add: addHashtags,
+  addOne: addHashtag,
+  subtract: subtractHashtags,
+  nuke: nukeHashtags
 };

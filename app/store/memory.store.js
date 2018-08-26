@@ -1,6 +1,13 @@
 import {Platform, AsyncStorage} from 'react-native';
+import HashtagStore from './hashtag.store';
 
 const MEMORIES = 'memoryArray';
+
+function uniqueId(memories) {
+  return _.maxBy(memories, (memory) => {
+    return memory.id;
+  });
+}
 
 export function getMemories(resCB) {
   return new Promise((resProm, errProm) => {
@@ -41,6 +48,7 @@ export function pushMemory(memory, resCB) {
       } else if(data) {
         let memories = JSON.parse(data);
         memories.unshift(memory);
+        HashtagStore.add(memory.tags);
         AsyncStorage.setItem(MEMORIES, JSON.stringify(memories), (error) => {
           if(error) {
             if(resCB) resCB(memories, error);
@@ -91,7 +99,9 @@ export function updateMemory(index, memory, resCB) {
         errProm(error);
       } else if(data) {
         let memories = JSON.parse(data);
+        HashtagStore.subtract(memories[index].tags);
         memories[index] = memory;
+        HashtagStore.add(memory.tags);
         AsyncStorage.setItem(MEMORIES, JSON.stringify(memories), (error) => {
           if(error) {
             if(resCB) resCB(memories, error);
@@ -114,6 +124,7 @@ export function deleteMemory(index, resCB) {
         errProm(error);
       } else if(data) {
         let memories = JSON.parse(data);
+        HashtagStore.subtract(memories[index].tags);
         memories.splice(index, 1);
         AsyncStorage.setItem(MEMORIES, JSON.stringify(memories), (error) => {
           if(error) {

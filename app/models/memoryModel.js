@@ -1,4 +1,4 @@
-export default class MemoryModel {
+export default class Memory {
   public text = '';
   public tags = [];
   public flags = [];
@@ -24,12 +24,12 @@ export default class MemoryModel {
   }
 
   public parseText() {
-    
+
   }
 
 }
 
-export class attachment {
+export class Attachment {
   url = '';
   image;
   title;

@@ -5,7 +5,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import Hashtag from '../components/Hashtag';
 import Header from '../components/Header';
 import EditMemoryToolbar from '../components/EditMemoryToolbar';
-import { pushMemory, getMemory, updateMemory } from '../store/memory.store';
+import {pushMemory, getMemory, updateMemory} from '../store/memory.store';
+import {hashtagsIn} from '../scripts/hashtags';
 
 const initialState = {
   tagArray: ['shopping', 'work'],
@@ -47,7 +48,7 @@ export default class NewMemory extends React.Component<Props> {
     if(!this.state.memoryText) return;
     let memory = {
       text: this.state.memoryText,
-      tags: [],
+      tags: hashtagsIn(this.state.memoryText),
       flags: [],
       flag: this.state.memoryFlag,
       done: this.state.memoryDone,
@@ -56,6 +57,7 @@ export default class NewMemory extends React.Component<Props> {
     };
     if(this.state.isEditing) {
       const {id} = this.props.navigation.state.params;
+      memory.id = id;
       updateMemory(id, memory).then(()=>{
         this.savedToast();
         this.closeScreen();

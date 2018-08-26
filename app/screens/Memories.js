@@ -4,25 +4,32 @@ import Icon from 'react-native-vector-icons/Feather';
 import _ from 'lodash';
 import MemoryListItem from '../components/MemoryListItem';
 import MemoryStore from '../store/memory.store';
+import HashtagStore from '../store/hashtag.store';
 
 export default class Memories extends React.Component {
 
   constructor(props){
     super(props);
     this.state = {
-      memoryArray: [],
       initialMemoryArray: [],
+      memoryArray: [],
+      tags: {},
       searchTerm: '',
     }
   }
 
   componentDidMount() {
+    //HashtagStore.nuke();
+    //AsyncStorage.removeItem('hashtagsArray');
     //AsyncStorage.removeItem('memoryArray'); // For development only to remove all stored memories
     const { navigation } = this.props;
     navigation.addListener('willFocus', () => {
       MemoryStore.getAll().then(memories => {
-        this.setState({'memoryArray': memories, initialMemoryArray: memories});
+        HashtagStore.getAll().then((tags) => {
+          this.setState({'memoryArray': memories, initialMemoryArray: memories, tags});
+        });
       });
+
     });
     this.props.navigation.navigate('EditMemory');
   }
