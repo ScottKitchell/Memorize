@@ -1,6 +1,7 @@
 import React from 'react';
 import {Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
 import ParsedText from 'react-native-parsed-text';
+import RichText from '../components/RichText';
 import Icon from 'react-native-vector-icons/Feather';
 import Hashtag from '../components/Hashtag';
 import Header from '../components/Header';
@@ -18,8 +19,8 @@ const initialState = {
   memoryCreatedAt: null
 };
 
-type Props = {};
-export default class NewMemory extends React.Component<Props> {
+
+export default class NewMemory extends React.Component {
 
   constructor(props){
     super(props);
@@ -42,6 +43,15 @@ export default class NewMemory extends React.Component<Props> {
         });
       });
     }
+  }
+  
+  parseRules() {
+    return [
+      {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
+      // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
+      // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
+      {pattern: /#(\w+)/,                 style: styles.hashtagText},
+    ];
   }
 
   saveMemory() {
@@ -107,17 +117,6 @@ export default class NewMemory extends React.Component<Props> {
   }
 
   render() {
-    let tags = this.state.tagArray.map((tag) => {
-      return <Hashtag key={tag} tag={tag} onPress={() => this.insertTag(tag) } />
-    });
-
-    const parseRules = [
-      {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
-      // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
-      // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
-      {pattern: /#(\w+)/,                 style: styles.hashtagText},
-    ];
-
     return (
       <View style={styles.container}>
         <Header
@@ -129,18 +128,19 @@ export default class NewMemory extends React.Component<Props> {
           <View style={styles.memoryInput}>
             <TextInput style={styles.textInput} placeholder="#Call mum back" placeholderTextColor="#CCC" autoFocus={true} multiline={true} underlineColorAndroid="transparent"
               onChangeText={(memoryText) => this.setState({memoryText})}>
-              <ParsedText style={styles.text} parse={parseRules} childrenProps={{allowFontScaling: false}}>
+              <ParsedText style={styles.text} parse={this.parseRules()} childrenProps={{allowFontScaling: false}}>
                   {this.state.memoryText}
                 </ParsedText>
-              </TextInput>
+              {/* <RichText>{this.state.memoryText}</RichText> */}
+            </TextInput>
           </View>
 
           <View style={styles.tagContainer}>
-            {tags}
+            <Text>memortText: {this.state.memoryText}</Text>
           </View>
 
           <View>
-
+            
           </View>
         </ScrollView>
 

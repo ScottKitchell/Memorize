@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { Colors } from '../scripts/styles';
 
 type Props = {};
 export default class Header extends React.Component<Props> {
@@ -38,8 +39,8 @@ const styles = StyleSheet.create({
     height: 56,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderBottomWidth: 1,
+    backgroundColor: Colors.purple,
+    borderBottomWidth: 0,
     borderBottomColor: '#EEE',
     padding: 4,
   },
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   itemText: {
-    color: '#444',
+    color: Colors.textLight,
     fontSize: 18,
   },
   title: {
@@ -59,10 +60,10 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#444',
+    color: Colors.textLight,
   },
   icon: {
     fontSize: 24,
-    color: '#444',
+    color: Colors.textLight,
   }
 });

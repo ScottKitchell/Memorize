@@ -5,7 +5,7 @@ import _ from 'lodash';
 import MemoryListItem from '../components/MemoryListItem';
 import MemoryStore from '../store/memory.store';
 import HashtagStore from '../store/hashtag.store';
-
+import { Colors } from '../scripts/styles';
 export default class Memories extends React.Component {
 
   constructor(props){
@@ -82,7 +82,7 @@ export default class Memories extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor="#FFF" barStyle="dark-content"/>
+        <StatusBar backgroundColor={Colors.deepPurple} barStyle="dark-content"/>
         <View style={styles.memoryInput}>
           <TextInput style={styles.textInput} placeholder="Search Memories" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
             onChangeText={this.search} value={this.state.searchTerm}>
@@ -124,17 +124,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   memoryInput: {
-    backgroundColor: '#FFF',
+    backgroundColor: Colors.purple,
     borderBottomWidth: 1,
     borderBottomColor: '#EEE',
+    padding: 12,
   },
   textInput: {
     alignSelf: 'stretch',
     textAlignVertical: 'top',
     fontSize: 18,
-    color: '#555',
-    padding: 16,
-    backgroundColor: '#FFF'
+    color: Colors.textLight,
+    padding: 6,
+    paddingLeft: 10,
+    backgroundColor: Colors.lighter,
+    borderRadius: 3,
   },
   scrollContainer: {
     flex: 1,
@@ -154,7 +157,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#BA2BF7',
+    backgroundColor: Colors.orange,
   },
   newButtonText: {
     fontSize: 22,
