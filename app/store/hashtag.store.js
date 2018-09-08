@@ -1,4 +1,5 @@
 import {Platform, AsyncStorage} from 'react-native';
+import _ from 'lodash';
 
 const HASHTAGS = 'hashtagArray';
 
@@ -8,21 +9,12 @@ export function getHashtags(resCB) {
       if(error) {
         if(resCB) resCB(null, error);
         errProm(error);
-      } else if(data) {
-        const hashtags = JSON.parse(data);
+      } else {
+        const hashtags = data? JSON.parse(data) : {};
         if(resCB) resCB(hashtags, null);
         resProm(hashtags);
-      } else {
-        if(resCB) resCB({}, null);
-        resProm({});
       }
     });
-  });
-}
-
-export function addHashtag(tag, resCB) {
-  return incrementHashtags([tag], (tags, error) => {
-    if(resCB) resCB(tags, error);
   });
 }
 
@@ -32,8 +24,8 @@ export function addHashtags(tags, resCB) {
       if(error) {
         if(resCB) resCB(null, error);
         errProm(error);
-      } else if(data) {
-        let hashtags = JSON.parse(data);
+      } else {
+        let hashtags = data? JSON.parse(data) : {};
         _.forEach(tags, (tag) => {
           const lowTag = tag.toLowerCase();
           hashtags[lowTag] = hashtags[lowTag]? hashtags[lowTag]+1 : 1;
@@ -58,8 +50,8 @@ export function subtractHashtags(tags, resCB) {
       if(error) {
         if(resCB) resCB(null, error);
         errProm(error);
-      } else if(data) {
-        let hashtags = JSON.parse(data);
+      } else {
+        let hashtags = data? JSON.parse(data) : {};
         _.forEach(tags, (tag) => {
           const lowTag = tag.toLowerCase();
           if(hashtags[lowTag]) hashtags[lowTag]--;
@@ -93,9 +85,8 @@ export function nukeHashtags(resCB) {
 }
 
 export default {
-  getAll: getHashtags,
+  get: getHashtags,
   add: addHashtags,
-  addOne: addHashtag,
   subtract: subtractHashtags,
   nuke: nukeHashtags
 };
