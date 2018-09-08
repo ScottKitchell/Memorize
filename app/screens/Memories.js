@@ -19,13 +19,10 @@ export default class Memories extends React.Component {
   }
 
   componentDidMount() {
-    //HashtagStore.nuke();
-    //AsyncStorage.removeItem('hashtagsArray');
-    //AsyncStorage.removeItem('memoryArray'); // For development only to remove all stored memories
     const { navigation } = this.props;
     navigation.addListener('willFocus', () => {
-      MemoryStore.getAll().then(memories => {
-        HashtagStore.getAll().then((tags) => {
+      MemoryStore.get().then(memories => {
+        HashtagStore.get().then((tags) => {
           this.setState({'memoryArray': memories, initialMemoryArray: memories, tags});
         });
       });
@@ -34,20 +31,16 @@ export default class Memories extends React.Component {
     this.props.navigation.navigate('EditMemory');
   }
 
-  toggleFlag = (id) => {
-    this._toggle(id,'flag');
-  }
+  toggleFlag = (id) => this.toggle(id,'flag');
 
-  toggleDone = (id) => {
-    this._toggle(id,'done');
-  }
+  toggleDone = (id) => this.toggle(id,'done');
 
-  _toggle = (id,key) => {
-    let memoryArray = (Object.assign([], this.state.memoryArray));
-    let memory = memoryArray[id];
+  toggle = (id,key) => {
+    let memory = _.clone(_.find(this.state.memoryArray, {id}));
     memory[key] = !memory[key];
-    MemoryStore.update(id, memory);
-    this.setState({'memoryArray': memoryArray});
+    MemoryStore.update(id, memory, (memories) => {
+      this.setState({'memoryArray': memories});
+    });
   }
 
   editMemory = (id) => {
@@ -55,22 +48,21 @@ export default class Memories extends React.Component {
   }
 
   deleteMemory = (id, memoryText) => {
+    const memoryRemoval = (id) => {
+      let memoryArray = (Object.assign([], this.state.memoryArray));
+      memoryArray.splice(id, 1);
+      MemoryStore.delete(id);
+      this.setState({'memoryArray': this.state.memoryArray});
+    };
     Alert.alert(
       'Delete this memory?',
       memoryText,
       [
         {text: 'Cancel', style: 'cancel'},
-        {text: 'Delete', onPress: () => this._deleteMemory(id), style: 'destructive'},
+        {text: 'Delete', onPress: () => memoryRemoval(id), style: 'destructive'},
       ],
       { cancelable: false }
     );
-  }
-
-  _deleteMemory = (id) => {
-    let memoryArray = (Object.assign([], this.state.memoryArray));
-    memoryArray.splice(id, 1);
-    MemoryStore.delete(id);
-    this.setState({'memoryArray': this.state.memoryArray});
   }
 
   search = (searchTerm) => {
@@ -79,10 +71,23 @@ export default class Memories extends React.Component {
     this.setState({memoryArray});
   }
 
+  renderMemory = ({item, index}) => (
+    <MemoryListItem
+      id={item.id}
+      memory={item}
+      onDonePress={this.toggleDone}
+      onFlagPress={this.toggleFlag}
+      onEditPress={this.editMemory}
+      onDeletePress={this.deleteMemory}
+    />
+  );
+
+  keyExtractor = (item, index) => String(item.id);
+
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor={Colors.deepPurple} barStyle="dark-content"/>
+        <StatusBar backgroundColor={Colors.primary} barStyle="dark-content"/>
         <View style={styles.memoryInput}>
           <TextInput style={styles.textInput} placeholder="Search Memories" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
             onChangeText={this.search} value={this.state.searchTerm}>
@@ -90,24 +95,15 @@ export default class Memories extends React.Component {
           </TextInput>
         </View>
         <View>
-          
+
         </View>
 
         <FlatList
           style={styles.body}
           data={this.state.memoryArray}
           extraData={this.state}
-          renderItem={({item, index}) => (
-            <MemoryListItem
-              key={index}
-              id={index}
-              memory={item}
-              toggleDone={this.toggleDone}
-              toggleFlag={this.toggleFlag}
-              edit={this.editMemory}
-              delete={this.deleteMemory}
-            />
-          )}
+          keyExtractor={this.keyExtractor}
+          renderItem={this.renderMemory}
         />
 
         <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('EditMemory')} >
@@ -124,7 +120,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   memoryInput: {
-    backgroundColor: Colors.purple,
+    backgroundColor: Colors.primary,
     borderBottomWidth: 1,
     borderBottomColor: '#EEE',
     padding: 12,
@@ -153,11 +149,11 @@ const styles = StyleSheet.create({
     right: 20,
     height: 56,
     width: 56,
-    borderRadius: 30,
-    elevation: 8,
+    borderRadius: 28,
+    elevation: 6,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.orange,
+    backgroundColor: Colors.secondary,
   },
   newButtonText: {
     fontSize: 22,

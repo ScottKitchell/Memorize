@@ -2,11 +2,11 @@ import React from 'react';
 import {Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import RichText from '../components/RichText';
-import Icon from 'react-native-vector-icons/Feather';
+import { Icon, ToggleIcon } from '../components/icons';
 import Hashtag from '../components/Hashtag';
 import Header from '../components/Header';
 import EditMemoryToolbar from '../components/EditMemoryToolbar';
-import {pushMemory, getMemory, updateMemory} from '../store/memory.store';
+import {createMemory, getMemory, updateMemory} from '../store/memory.store';
 import {hashtagsIn} from '../scripts/hashtags';
 
 const initialState = {
@@ -26,7 +26,8 @@ export default class NewMemory extends React.Component {
     super(props);
     this.state = {
       ...initialState,
-      isEditing: false
+      isEditing: false,
+      toggleIcon: false,
     };
   }
 
@@ -44,7 +45,7 @@ export default class NewMemory extends React.Component {
       });
     }
   }
-  
+
   parseRules() {
     return [
       {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
@@ -75,7 +76,7 @@ export default class NewMemory extends React.Component {
         Alert.alert(err);
       });
     } else {
-      pushMemory(memory).then(()=>{
+      createMemory(memory).then(()=>{
         this.savedToast();
         this.resetState();
       }).catch((err)=>{
@@ -136,11 +137,10 @@ export default class NewMemory extends React.Component {
           </View>
 
           <View style={styles.tagContainer}>
-            <Text>memortText: {this.state.memoryText}</Text>
-          </View>
 
+          </View>
           <View>
-            
+
           </View>
         </ScrollView>
 
