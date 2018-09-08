@@ -20,7 +20,7 @@ export default class EditMemoryToolbar extends React.Component<Props> {
 
         <View>
           <TouchableOpacity style={styles.item} onPress={this.props.toggleDone} >
-            <Icon name="check-square" size={24} style={this.props.done? styles.selected : {}}/>
+            <Icon name="check-circle" size={24} style={this.props.done? styles.selected : {}}/>
           </TouchableOpacity>
         </View>
 

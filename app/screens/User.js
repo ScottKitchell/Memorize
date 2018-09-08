@@ -1,9 +1,10 @@
 import React from 'react';
 import {Platform, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import {nukeMemories} from '../store/memory.store';
 
-type Props = {};
-export default class User extends React.Component<Props> {
+
+export default class User extends React.Component {
 
   constructor(props){
     super(props);
@@ -48,6 +49,7 @@ export default class User extends React.Component<Props> {
     return (
       <View style={styles.container}>
         <Text><Icon name='user'/> Reflection</Text>
+        <Button title="Delete all memories" onPress={()=>nukeMemories()}/>
       </View>
     );
   }

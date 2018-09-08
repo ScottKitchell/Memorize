@@ -6,7 +6,7 @@ import Memories from './screens/Memories';
 import FlaggedMemories from './screens/FlaggedMemories';
 import User from './screens/User';
 import EditMemory from './screens/EditMemory';
-
+import { Colors } from './scripts/styles';
 
 const TabNavigator = createBottomTabNavigator({
   Memories: { screen: Memories },
@@ -25,12 +25,12 @@ const TabNavigator = createBottomTabNavigator({
       } else if (routeName === 'Reflection') {
         iconName = 'user';
       }
-      return <Icon name={iconName} size={24} color={focused? '#BA2BF7':'#AAA'} />;
+      return <Icon name={iconName} size={24} color={focused? Colors.primary : Colors.grey} />;
     },
   }),
   tabBarOptions: {
-    activeTintColor: '#BA2BF7',
-    inactiveTintColor: '#AAA',
+    activeTintColor: Colors.primary,
+    inactiveTintColor: Colors.grey,
     style: {
       height: 56,
       backgroundColor: '#FFF'
