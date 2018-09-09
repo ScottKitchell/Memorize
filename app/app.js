@@ -2,10 +2,10 @@ import React from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView, TouchableNativeFeedback } from 'react-native';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Feather';
-import Memories from './screens/Memories';
-import FlaggedMemories from './screens/FlaggedMemories';
-import User from './screens/User';
-import EditMemory from './screens/EditMemory';
+import Memories from './screens/memories';
+import FlaggedMemories from './screens/flagged-memories';
+import User from './screens/user';
+import EditMemory from './screens/edit-memory';
 import { Colors } from './scripts/styles';
 
 const TabNavigator = createBottomTabNavigator({

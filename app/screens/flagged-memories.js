@@ -1,7 +1,7 @@
 import React from 'react';
 import {Platform, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import MemoryListItem from '../components/MemoryListItem';
+import MemoryListItem from '../components/memory-list-item';
 
 type Props = {};
 export default class FlaggedMemories extends React.Component<Props> {

@@ -2,7 +2,7 @@ import React from 'react';
 import {Platform, Alert, StyleSheet, AsyncStorage, View, ScrollView, FlatList, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import _ from 'lodash';
-import MemoryListItem from '../components/MemoryListItem';
+import MemoryListItem from '../components/memory-list-item';
 import MemoryStore from '../store/memory.store';
 import HashtagStore from '../store/hashtag.store';
 import { Colors } from '../scripts/styles';

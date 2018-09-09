@@ -1,13 +1,13 @@
 import React from 'react';
-import {Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button} from 'react-native';
+import { Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button } from 'react-native';
 import ParsedText from 'react-native-parsed-text';
-import RichText from '../components/RichText';
+import RichText from '../components/rich-text';
 import { Icon, ToggleIcon } from '../components/icons';
-import Hashtag from '../components/Hashtag';
-import Header from '../components/Header';
-import EditMemoryToolbar from '../components/EditMemoryToolbar';
-import {createMemory, getMemory, updateMemory} from '../store/memory.store';
-import {hashtagsIn} from '../scripts/hashtags';
+import Hashtag from '../components/hashtag';
+import Header from '../components/header';
+import EditMemoryToolbar from '../components/edit-memory-toolbar';
+import { createMemory, getMemory, updateMemory } from '../store/memory.store';
+import { hashtagsIn } from '../scripts/hashtags';
 
 const initialState = {
   tagArray: ['shopping', 'work'],
@@ -20,7 +20,7 @@ const initialState = {
 };
 
 
-export default class NewMemory extends React.Component {
+export default class EditMemory extends React.Component {
 
   constructor(props){
     super(props);
