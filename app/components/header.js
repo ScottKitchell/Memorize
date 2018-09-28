@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   itemText: {
-    color: Colors.textLight,
+    color: Colors.text.onDark,
     fontSize: 18,
   },
   title: {
@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.textLight,
+    color: Colors.text.onDark,
   },
   icon: {
     fontSize: 24,
-    color: Colors.textLight,
+    color: Colors.text.onDark,
   }
 });

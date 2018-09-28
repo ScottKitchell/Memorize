@@ -62,7 +62,7 @@ export const Colors = {
 export const MemoryMatchStyles = [
   {
     match:/#(\w+)/g, style: { // Hashtag
-      color: Colors.primary.dark
+      color: Colors.red.light
     }
   }
 ];

@@ -48,7 +48,7 @@ export default class MemoryListItem extends React.Component {
     // },
     {
       text: 'Flag',
-      backgroundColor: Colors.secondary,
+      backgroundColor: Colors.primary.light,
       onPress: () => this.props.onFlagPress(id),
     },{
       text: 'Edit',
@@ -59,7 +59,7 @@ export default class MemoryListItem extends React.Component {
     const rightButtons = [{
       text: 'Delete',
       type: 'delete',
-      backgroundColor: Colors.secondary,
+      backgroundColor: Colors.primary.light,
       onPress: () => this.props.onDeletePress(id, memory.text),
     }];
 

@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableWithoutFeedback, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import NativeIcon from 'react-native-vector-icons/Feather';
 
-export { Icon };
+
+export function Icon(props) {
+  const { color, ...otherProps } = props;
+  return <NativeIcon color={String(color)} {...otherProps} />
+}
 
 export class ToggleIcon extends React.Component {
 
@@ -29,7 +33,7 @@ export class ToggleIcon extends React.Component {
     return (
       <View style={[{width: width}, this.props.style]}>
       <TouchableWithoutFeedback onPress={this.props.onPress} >
-        <Icon name={name} size={this.props.size} color={color}/>
+        <Icon name={name} size={this.props.size} color={String(color)}/>
       </TouchableWithoutFeedback>
     </View>
     );

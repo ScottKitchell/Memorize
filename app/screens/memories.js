@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     color: Colors.textLight,
     padding: 6,
     paddingLeft: 10,
-    backgroundColor: Colors.lighter,
+    backgroundColor: Colors.overlay.light,
     borderRadius: 3,
   },
   scrollContainer: {
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.primary.light,
   },
   newButtonText: {
     fontSize: 22,
