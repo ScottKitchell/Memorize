@@ -1,40 +1,73 @@
 //Colors at http://www.color-hex.com/color-palette/17804
+// http://www.0to255.com/
 export const Colors = {
-  // purple: '#5c3c79',
-  // deepPurple: '#52366c',
-  // orange: '#f86942',
-  // aqua: '#86dfdc',
-  grey: '#e5e5e5',
-  lighter: 'rgba(255, 255, 255, 0.06)',
-  darker: 'rgba(0, 0, 0, 0.06)',
-  text: 'rgba(0, 0, 0, 0.75)',
-  textLight: 'rgba(255, 255, 255, 0.75)',
-  // primaryXLight: { color: #5C3C79 }
-  // primaryLight: { color: #9F89B2 }
-  primary: '#8048A1',
-  //primary: '#765A90',
-  // primaryDark: { color: #432560 }
-  // primaryXDark: { color: #2C1145 }
-
-  // secondaryXLight: { color: #843C72 },
-  // secondary-1-1 { color: #C191B5 },
-  secondary: '#C05091',
-  //secondary: '#9E5E8E',
-  // secondary-1-3 { color: #692357 },
-  // secondary-1-4 { color: #4B0E3C },
-
-// .color-secondary-2-0 { color: #94AB4E,
-// .color-secondary-2-1 { color: #E5F3B7,
-green: '#B7E15E',
-//green: '#B7CB7A',
-
-// .color-secondary-2-3 { color: #71872D,
-// .color-secondary-2-4 { color: #4E6113,
-
-// .color-complement-0 { color: #B4AF52 }
-// .color-complement-1 { color: #FFFCC0 }
- yellow: '#B4AF52',
- //yellow: '#D6D180',
-// .color-complement-3 { color: #8E8930 }
-// .color-complement-4 { color: #666214 }
+  text: {
+    soft: 'rgba(0, 0, 0, 0.68)',
+    toString: ()=>'rgba(0, 0, 0, 0.75)',
+    strong: 'rgba(0, 0, 0, 0.88)',
+    onDark: {
+      soft: 'rgba(255, 255, 255, 0.68)',
+      toString: ()=>'rgba(255, 255, 255, 0.78)',
+      strong: 'rgba(255, 255, 255, 0.88)',
+    }
+  },
+  primary: {
+    xLight: '#a16fbe',
+    light: '#9157b4',
+    toString: ()=>'#8048A1',
+    dark: '#6d3e8a',
+    xDark: '#5b3372',
+  },
+  grey: {
+    xLight: '#f6f6f6',
+    light: '#e5e5e5',
+    toString: ()=>'#d4d4d4',
+    dark: '#c3c3c3',
+    xDark: '#b2b2b2',
+  },
+  green: {
+    xLight: '#b7d47a',
+    light: '#a9cb61',
+    toString: ()=>'#9bc347',
+    dark: '#89af39',
+    xDark: '#759531',
+  },
+  blue: {
+    xLight: '#7dbad4',
+    light: '#64adcb',
+    toString: ()=>'#4a9fc3',
+    dark: '#3b8db1',
+    xDark: '#327997',
+  },
+  yellow: {
+    xLight: '#dfcf78',
+    light: '#d9c55c',
+    toString: ()=>'#d2bb41',
+    dark: '#c3ab2e',
+    xDark: '#a79328',
+  },
+  red: {
+    xLight: '#d77676',
+    light: '#cf5c5c',
+    toString: ()=>'#c74242',
+    dark: '#b23535',
+    xDark: '#982d2d',
+  },
+  overlay: {
+    light: 'rgba(255, 255, 255, 0.06)',
+    dark: 'rgba(0, 0, 0, 0.06)',
+  },
 };
+
+export const MemoryMatchStyles = [
+  {
+    match:/#(\w+)/g, style: { // Hashtag
+      color: Colors.primary.dark
+    }
+  }
+];
+
+export default {
+  colors: Colors,
+  memoryMatchStyles: MemoryMatchStyles,
+}
