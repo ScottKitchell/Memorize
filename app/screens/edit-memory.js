@@ -1,13 +1,15 @@
 import React from 'react';
 import { Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button } from 'react-native';
-import ParsedText from 'react-native-parsed-text';
+// import ParsedText from 'react-native-parsed-text';
 import RichText from '../components/rich-text';
 import { Icon, ToggleIcon } from '../components/icons';
 import Hashtag from '../components/hashtag';
 import Header from '../components/header';
 import EditMemoryToolbar from '../components/edit-memory-toolbar';
-import { createMemory, getMemory, updateMemory } from '../store/memory.store';
+import MemoryStore from '../store/memory.store';
 import { hashtagsIn } from '../scripts/hashtags';
+import Styles from '../scripts/styles';
+import moment from 'moment';
 
 const initialState = {
   tagArray: ['shopping', 'work'],
@@ -35,7 +37,7 @@ export default class EditMemory extends React.Component {
     const id = this.props.navigation.getParam('id', -1);
     if(id>=0) {
       this.setState({isEditing: true});
-      getMemory(id).then(memory => {
+      MemoryStore.getOne(id).then(memory => {
         this.setState({
           memoryText: memory.text,
           memoryFlag: memory.flag,
@@ -57,28 +59,31 @@ export default class EditMemory extends React.Component {
 
   saveMemory() {
     if(!this.state.memoryText) return;
+    const now = moment();
+    const tags = this.state.memoryText.match(/#(\w+)/g);
     let memory = {
       text: this.state.memoryText,
       tags: hashtagsIn(this.state.memoryText),
-      flags: [],
+      flags: [{type: 'reminder', at: moment("2018-09-29")}],
       flag: this.state.memoryFlag,
       done: this.state.memoryDone,
-      archive: false,
-      createdAt: new Date()
+      updatedAt: now,
     };
     if(this.state.isEditing) {
       const {id} = this.props.navigation.state.params;
       memory.id = id;
-      updateMemory(id, memory).then(()=>{
+      MemoryStore.update(id, memory).then(()=>{
         this.savedToast();
         this.closeScreen();
       }).catch((err)=>{
         Alert.alert(err);
       });
     } else {
-      createMemory(memory).then(()=>{
+      memory.createdAt = now;
+      MemoryStore.create(memory).then(()=>{
         this.savedToast();
-        this.resetState();
+        this.closeScreen();
+        // this.resetState();
       }).catch((err)=>{
         Alert.alert(err);
       });
@@ -129,10 +134,7 @@ export default class EditMemory extends React.Component {
           <View style={styles.memoryInput}>
             <TextInput style={styles.textInput} placeholder="#Call mum back" placeholderTextColor="#CCC" autoFocus={true} multiline={true} underlineColorAndroid="transparent"
               onChangeText={(memoryText) => this.setState({memoryText})}>
-              <ParsedText style={styles.text} parse={this.parseRules()} childrenProps={{allowFontScaling: false}}>
-                  {this.state.memoryText}
-                </ParsedText>
-              {/* <RichText>{this.state.memoryText}</RichText> */}
+              <RichText matchStyles={Styles.memoryMatchStyles}>{this.state.memoryText}</RichText>
             </TextInput>
           </View>
 

@@ -6,6 +6,7 @@ import MemoryListItem from '../components/memory-list-item';
 import MemoryStore from '../store/memory.store';
 import HashtagStore from '../store/hashtag.store';
 import { Colors } from '../scripts/styles';
+
 export default class Memories extends React.Component {
 
   constructor(props){
@@ -35,11 +36,12 @@ export default class Memories extends React.Component {
 
   toggleDone = (id) => this.toggle(id,'done');
 
-  toggle = (id,key) => {
-    let memory = _.clone(_.find(this.state.memoryArray, {id}));
+  toggle = (id, key) => {
+    let memoryArray = _.clone(this.state.memoryArray);
+    let memory = _.find(memoryArray, {id});
     memory[key] = !memory[key];
-    MemoryStore.update(id, memory, (memories) => {
-      this.setState({'memoryArray': memories});
+    MemoryStore.update(id, memory).then(() => {
+      this.setState({memoryArray});
     });
   }
 
@@ -65,11 +67,11 @@ export default class Memories extends React.Component {
     );
   }
 
-  search = (searchTerm) => {
-    this.setState({searchTerm});
-    const memoryArray = _.filter(this.state.initialMemoryArray, memory => String(memory.text).includes(searchTerm));
-    this.setState({memoryArray});
-  }
+  search = _.throttle((searchTerm) => {
+    MemoryStore.search(searchTerm).then(memoryArray => {
+      this.setState({memoryArray});
+    });
+  }, 600);
 
   renderMemory = ({item, index}) => (
     <MemoryListItem
@@ -90,9 +92,7 @@ export default class Memories extends React.Component {
         <StatusBar backgroundColor={Colors.primary} barStyle="dark-content"/>
         <View style={styles.memoryInput}>
           <TextInput style={styles.textInput} placeholder="Search Memories" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
-            onChangeText={this.search} value={this.state.searchTerm}>
-              {/*<ParsedText><Text style{{color: '#336699'}}>{this.setState({memoryText})}</Text></ParsedText>*/}
-          </TextInput>
+            onChangeText={this.search} />
         </View>
         <View>
 
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     textAlignVertical: 'top',
     fontSize: 18,
-    color: Colors.textLight,
+    color: Colors.text.onDark,
     padding: 6,
     paddingLeft: 10,
     backgroundColor: Colors.overlay.light,
