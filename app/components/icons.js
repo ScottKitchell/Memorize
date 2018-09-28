@@ -16,8 +16,8 @@ export class ToggleIcon extends React.Component {
     toggled: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired,
     toggledName: PropTypes.string.isRequired,
-    color: PropTypes.string,
-    toggledColor: PropTypes.string,
+    color: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
+    toggledColor: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
     size: PropTypes.number,
     onPress: PropTypes.func,
   }

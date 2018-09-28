@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView, TouchableNativeFeedback } from 'react-native';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
-import Icon from 'react-native-vector-icons/Feather';
+import { Icon } from './components/icons';
 import Memories from './screens/memories';
 import FlaggedMemories from './screens/flagged-memories';
 import User from './screens/user';
