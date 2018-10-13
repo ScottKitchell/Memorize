@@ -99,9 +99,10 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
-        applicationId "com.ginkgo"
+        applicationId "com.memorize"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -137,7 +138,6 @@ android {
             }
         }
     }
-    buildToolsVersion '27.0.3'
 }
 
 dependencies {
