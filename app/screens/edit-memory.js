@@ -1,24 +1,30 @@
 import React from 'react';
 import { Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button } from 'react-native';
 // import ParsedText from 'react-native-parsed-text';
-import RichText from '../components/rich-text';
+// import RichText from '../components/rich-text';
+import { RichTextInput } from '../components/rich-text';
 import { Icon, ToggleIcon } from '../components/icons';
 import Hashtag from '../components/hashtag';
 import Header from '../components/header';
 import EditMemoryToolbar from '../components/edit-memory-toolbar';
 import MemoryStore from '../store/memory.store';
+import HashtagStore from '../store/hashtag.store';
 import { hashtagsIn } from '../scripts/hashtags';
 import Styles from '../scripts/styles';
 import moment from 'moment';
+import { forEach } from 'lodash';
+
 
 const initialState = {
-  tagArray: ['shopping', 'work'],
+  isEditing: false,
+  topHashtags: [],
   memoryText: '',
   memoryTags: [],
   memoryFlags: [],
   memoryFlag: false,
   memoryDone: false,
-  memoryCreatedAt: null
+  memoryCreatedAt: null,
+  memoryUpdatedAt: null,
 };
 
 
@@ -26,50 +32,41 @@ export default class EditMemory extends React.Component {
 
   constructor(props){
     super(props);
-    this.state = {
-      ...initialState,
-      isEditing: false,
-      toggleIcon: false,
-    };
+    this.state = initialState;
   }
 
   componentDidMount() {
     const id = this.props.navigation.getParam('id', -1);
     if(id>=0) {
-      this.setState({isEditing: true});
       MemoryStore.getOne(id).then(memory => {
         this.setState({
+          isEditing: true,
           memoryText: memory.text,
           memoryFlag: memory.flag,
           memoryDone: memory.done,
-          memoryCreatedAt: memory.createdAt,
+          memoryCreatedAt: memory.done,
         });
       });
     }
-  }
-
-  parseRules() {
-    return [
-      {type: 'url',                       style: styles.url, onPress: this.handleUrlPress},
-      // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
-      // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
-      {pattern: /#(\w+)/,                 style: styles.hashtagText},
-    ];
+    HashtagStore.get().then((topHashtags) => {
+      console.log('topHashtags',topHashtags);
+      this.setState({topHashtags});
+    });
   }
 
   saveMemory() {
     if(!this.state.memoryText) return;
-    const now = moment();
     const tags = this.state.memoryText.match(/#(\w+)/g);
     let memory = {
       text: this.state.memoryText,
       tags: hashtagsIn(this.state.memoryText),
-      flags: [{type: 'reminder', at: moment("2018-09-29")}],
+      triggers: ["22-2222"],
       flag: this.state.memoryFlag,
       done: this.state.memoryDone,
-      updatedAt: now,
     };
+
     if(this.state.isEditing) {
+      console.log('update memory',memory);
       const {id} = this.props.navigation.state.params;
       memory.id = id;
       MemoryStore.update(id, memory).then(()=>{
@@ -79,11 +76,11 @@ export default class EditMemory extends React.Component {
         Alert.alert(err);
       });
     } else {
-      memory.createdAt = now;
+      console.log('save new memory',memory);
       MemoryStore.create(memory).then(()=>{
         this.savedToast();
-        this.closeScreen();
-        // this.resetState();
+        // this.closeScreen();
+        this.resetState();
       }).catch((err)=>{
         Alert.alert(err);
       });
@@ -101,8 +98,8 @@ export default class EditMemory extends React.Component {
 
   insertTag(tag) {
     this.setState({
-      'memoryText': this.state.memoryText + '#'+tag,
-      'memoryTags': [...this.state.memoryTags, tag]
+      memoryText: this.state.memoryText + '#'+tag,
+      memoryTags: [...this.state.memoryTags, tag]
     });
   }
 
@@ -132,14 +129,25 @@ export default class EditMemory extends React.Component {
 
         <ScrollView style={styles.body} keyboardShouldPersistTaps="handled">
           <View style={styles.memoryInput}>
-            <TextInput style={styles.textInput} placeholder="#Call mum back" placeholderTextColor="#CCC" autoFocus={true} multiline={true} underlineColorAndroid="transparent"
-              onChangeText={(memoryText) => this.setState({memoryText})}>
-              <RichText matchStyles={Styles.memoryMatchStyles}>{this.state.memoryText}</RichText>
-            </TextInput>
+            <RichTextInput
+              style={styles.textInput}
+              placeholder="#Call mum back"
+              placeholderTextColor="#CCC"
+              autoFocus={true}
+              multiline={true}
+              underlineColorAndroid="transparent"
+              returnKeyLabel={'done'}
+              onChangeText={memoryText => this.setState({memoryText})}
+            />
           </View>
 
           <View style={styles.tagContainer}>
-
+            {/* <Hashtag tag={this.state.topHashtags[0]} onPress={this.insertTag} /> */}
+            {/* {forEach(this.state.topHashtags, (hashtag, i) => {
+              hashtag = hashtag.replace(/^#/, '');
+              console.log(hashtag);
+              <Hashtag key={i} tag={hashtag} onPress={this.insertTag} />;
+            })} */}
           </View>
           <View>
 
