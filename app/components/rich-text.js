@@ -7,25 +7,21 @@ const KEYWORD_REGEX = /#(\w+)/g
 const URL_REGEX = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
 
 
-export class RichText extends React.Component {
-
-  shouldComponentUpdate(nextProps) {
-    return (nextProps.children != this.props.children);
-  }
+export class RichText extends React.PureComponent {
 
   enrichText = () => {
     if (this.props.children == null) return '';
     const formats = [
       {regex: KEYWORD_REGEX, style: [styles.keyword, this.props.keywordStyle]},
-      {regex: URL_REGEX, style: [styles.url, this.props.urlStyle]},
+      // {regex: URL_REGEX, style: [styles.url, this.props.urlStyle]},
     ];
     return _.reduce(formats, this.wrapMatchesInStyledText, this.props.children);
   };
 
-  wrapMatchesInStyledText = (text, format) => {
-    let result = text.split(format.regex);
+  wrapMatchesInStyledText = (text, matching) => {
+    let result = text.split(matching.regex);
     for (let i=1; i<result.length; i+=2) {
-      result[i] = <Text key={'richText'+i} style={format.style}>#{result[i]}</Text>
+      result[i] = <Text key={'richText'+i} style={matching.style}>#{result[i]}</Text>
     }
     return result;
   }
@@ -36,6 +32,7 @@ export class RichText extends React.Component {
     return <Text {...this.props}>{richText}</Text>;
   }
 }
+
 
 export class RichTextInput extends React.Component {
 
@@ -75,3 +72,65 @@ styles = StyleSheet.create({
     textDecorationLine: 'underline',
   }
 });
+
+
+// class ParseTextInput extends React.Component {
+//
+//   var regexp = /\bcat[^\b]*?\b/gi;
+//
+//    var timer;
+//    $("#editor").keyup(function(event){
+//      timer = Math.floor(Date.now() / 1000);
+//    });
+//
+//    setInterval(function(){
+//      if(Math.floor(Date.now() / 1000) - timer >= 2)
+//        colorize();
+//    },5000);
+//
+//    function colorize(){
+//
+//      var foo = $("#editor").text();
+//      var match, matches = [];
+//
+//      while ((match = regexp.exec(foo)) != null) {
+//        matches.push(match.index);
+//      }
+//
+//      var i;
+//      var start = 0;
+//      var content = "";
+//      var element = "<span style='color:red;'>cat</span>";
+//
+//      for(i = 0; i < matches.length; i++){
+//        content += "<span>" + foo.substring(start,matches[i]) + "</span>" + element;
+//        start = matches[i] + 3;
+//      }
+//      content += "<span>"+foo.substring(matches[i-1]+3,foo.length)+"</span>";
+//
+//      $("#editor").html(content).focus();
+//      placeCaretAtEnd( document.getElementById("editor") );
+//    }
+//
+//    function placeCaretAtEnd(el) {
+//      el.focus();
+//      if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+//          var range = document.createRange();
+//          range.selectNodeContents(el);
+//          range.collapse(false);
+//          var sel = window.getSelection();
+//          sel.removeAllRanges();
+//          sel.addRange(range);
+//      } else if (typeof document.body.createTextRange != "undefined") {
+//          var textRange = document.body.createTextRange();
+//          textRange.moveToElementText(el);
+//          textRange.collapse(false);
+//          textRange.select();
+//      }
+//    }
+//
+//    render(){
+//
+//    }
+//
+// }
