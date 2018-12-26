@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView, TouchableNativeFeedback } from 'react-native';
-import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
+import { createBottomTabNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import { Icon } from './components/icons';
 import Memories from './screens/memories';
 import FlaggedMemories from './screens/flagged-memories';
@@ -9,9 +9,9 @@ import EditMemory from './screens/edit-memory';
 import { Colors } from './scripts/styles';
 
 const TabNavigator = createBottomTabNavigator({
-  Memories: { screen: Memories },
-  Flags: { screen: FlaggedMemories },
-  Reflection: { screen: User }
+  Memories:  Memories,
+  Flags:  FlaggedMemories,
+  Reflection:  User,
 },
 {
   navigationOptions: ({ navigation }) => ({
@@ -28,6 +28,7 @@ const TabNavigator = createBottomTabNavigator({
       return <Icon name={iconName} size={24} color={focused? Colors.primary : Colors.grey} />;
     },
   }),
+  tabBarButtonComponent:
   tabBarOptions: {
     activeTintColor: Colors.primary,
     inactiveTintColor: Colors.grey,
@@ -42,11 +43,17 @@ const TabNavigator = createBottomTabNavigator({
 });
 
 const AppNavStack = createStackNavigator({
-  Tabs: TabNavigator,
+  Tabs: {
+    screen: TabNavigator,
+    navigationOptions: {
+      header: null,
+    }
+  },
   EditMemory: {
     screen: EditMemory,
     navigationOptions: {
       title: 'Edit Memory',
+      header: null,
     }
   },
 },
@@ -57,4 +64,4 @@ const AppNavStack = createStackNavigator({
   }
 });
 
-export default AppNavStack;
+export default createAppContainer(AppNavStack);
