@@ -4,7 +4,6 @@ import { Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, Sc
 // import RichText from '../components/rich-text';
 import { RichTextInput } from '../components/rich-text';
 import { Icon, ToggleIcon } from '../components/icons';
-import Hashtag from '../components/hashtag';
 import Header from '../components/header';
 import EditMemoryToolbar from '../components/edit-memory-toolbar';
 import MemoryStore from '../store/memory.store';
@@ -44,7 +43,7 @@ export default class EditMemory extends React.Component {
           memoryText: memory.text,
           memoryFlag: memory.flag,
           memoryDone: memory.done,
-          memoryCreatedAt: memory.done,
+          memoryCreatedAt: memory.createdAt,
         });
       });
     }
@@ -79,13 +78,11 @@ export default class EditMemory extends React.Component {
       console.log('save new memory',memory);
       MemoryStore.create(memory).then(()=>{
         this.savedToast();
-        // this.closeScreen();
         this.resetState();
       }).catch((err)=>{
         Alert.alert(err);
       });
     }
-
   }
 
   savedToast(){
@@ -129,7 +126,7 @@ export default class EditMemory extends React.Component {
 
         <ScrollView style={styles.body} keyboardShouldPersistTaps="handled">
           <View style={styles.memoryInput}>
-            <RichTextInput
+            <TextInput
               style={styles.textInput}
               placeholder="#Call mum back"
               placeholderTextColor="#CCC"
@@ -137,18 +134,11 @@ export default class EditMemory extends React.Component {
               multiline={true}
               underlineColorAndroid="transparent"
               returnKeyLabel={'done'}
+              value={this.state.memoryText}
               onChangeText={memoryText => this.setState({memoryText})}
             />
           </View>
 
-          <View style={styles.tagContainer}>
-            {/* <Hashtag tag={this.state.topHashtags[0]} onPress={this.insertTag} /> */}
-            {/* {forEach(this.state.topHashtags, (hashtag, i) => {
-              hashtag = hashtag.replace(/^#/, '');
-              console.log(hashtag);
-              <Hashtag key={i} tag={hashtag} onPress={this.insertTag} />;
-            })} */}
-          </View>
           <View>
 
           </View>

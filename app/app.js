@@ -28,7 +28,6 @@ const TabNavigator = createBottomTabNavigator({
       return <Icon name={iconName} size={24} color={focused? Colors.primary : Colors.grey} />;
     },
   }),
-  tabBarButtonComponent:
   tabBarOptions: {
     activeTintColor: Colors.primary,
     inactiveTintColor: Colors.grey,
