@@ -1,10 +1,11 @@
 import React from 'react';
-import {Platform, StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, View, TextInput, TouchableHighlight, TouchableOpacity, TouchableNativeFeedback} from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
 import ParsedText from 'react-native-parsed-text';
 import { Icon, ToggleIcon } from './icons';
 import { Colors } from '../scripts/styles';
+import moment from 'moment';
 
 export default class MemoryListItem extends React.Component {
 
@@ -17,69 +18,68 @@ export default class MemoryListItem extends React.Component {
     onDeletePress: PropTypes.func.isRequired
   }
 
-  constructor(props){
-    super(props);
-
-  }
-
-  renderCheckBox(toggled) {
-    return (
-      <ToggleIcon color="#ccc" toggledColor={Colors.green} size={24} name="circle" toggledName="check-circle" toggled={toggled} onPress={() => this.props.onDonePress(this.props.id)}/>
-    )
-  }
-
   render() {
     const id = this.props.id;
     const memory = this.props.memory;
 
-    const parseRules = [
-      {type: 'url',                       style: styles.urlText, onPress: this.handleUrlPress},
-      // {type: 'phone',                     style: styles.phone, onPress: this.handlePhonePress},
-      // {type: 'email',                     style: styles.email, onPress: this.handleEmailPress},
-      {pattern: /#(\w+)/,                 style: styles.hashtagText},
-      //{pattern: /!(FLAG|DONE|FORGET)/,    style: styles.metatagText},
-    ];
-
-    const leftButtons = [
-    //   {
-    //   text: 'Done',
-    //   backgroundColor: '#88e67c',
-    //   onPress: () => this.props.onDonePress(id),
-    // },
-    {
-      text: 'Flag',
-      backgroundColor: Colors.primary.light,
-      onPress: () => this.props.onFlagPress(id),
-    },{
-      text: 'Edit',
-      backgroundColor: Colors.yellow,
-      onPress: () => this.props.onEditPress(id),
-    }];
-
     const rightButtons = [{
       text: 'Delete',
       type: 'delete',
-      backgroundColor: Colors.primary.light,
+      backgroundColor: String(Colors.red),
       onPress: () => this.props.onDeletePress(id, memory.text),
     }];
 
     return (
-      <Swipeout key={this.props.id} style={[styles.container, memory.done? styles.done : {}]} left={leftButtons} right={rightButtons} autoClose={true}>
-        <View style={styles.main}>
-          <View style={styles.memory}>
-            <Text style={styles.memoryText}>{memory.text}</Text>
-          </View>
-          <View style={styles.actions}>
-            {this.renderCheckBox(memory.done)}
-          </View>
-        </View>
-        <View style={styles.extra}>
+      <Swipeout
+        key={id}
+        style={[styles.container, memory.done? styles.done : {}]}
+        right={rightButtons}
+        autoClose={true}
+      >
+        <TouchableHighlight
+          style={styles.main}
+          onPress={()=>this.props.onEditPress(id)}
+          underlayColor='#cccccc'
+        >
+          <React.Fragment>
+            <View style={styles.leftPanel}>
+              <CheckCircle
+                checked={memory.done}
+                onChange={() => this.props.onDonePress(id)}
+              />
+            </View>
+            <View style={styles.centerPanel}>
+              <View style={styles.memoryDate}>
+                <Text style={styles.memoryDateText}>
+                  {moment(memory.createdAt,'X').fromNow(true)}
+                </Text>
+              </View>
+              <View style={styles.memoryContent}>
+                <Text style={styles.memoryContentText}>
+                  {memory.text}
+                </Text>
+              </View>
+              <View style={styles.actionStrip}>
 
-        </View>
+              </View>
+            </View>
+          </React.Fragment>
+        </TouchableHighlight>
       </Swipeout>
     );
   }
 }
+
+const CheckCircle = (props) => (
+  <TouchableOpacity
+    // background={TouchableNativeFeedback.Ripple('#bbbbbb')}
+    onPress={() => props.onChange(!props.checked)}
+    style={[styles.checkCircle, props.checked && styles.checkedCircle]}
+  >
+    <Text></Text>
+  </TouchableOpacity>
+)
+
 
 const styles = StyleSheet.create({
   container: {
@@ -89,48 +89,55 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   done: {
-    backgroundColor: '#F9F9F9',
+    backgroundColor: '#fbfbfb',
   },
   flagged: {
-    backgroundColor: '#e5edda',
+    backgroundColor: Colors.grey.light,
   },
   selected: {
-    color: Colors.aqua,
+    color: String(Colors.green),
   },
   main: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 25,
-    // paddingTop: 16,
-    // paddingBottom: 12,
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
-  memory: {
+  leftPanel: {
+    width: 56,
+  },
+  checkCircle: {
+    width: 44,
+    height: 44,
+    backgroundColor: '#eeeeee',
+    borderRadius: 22,
+  },
+  checkedCircle: {
+    backgroundColor: '#e056fd',
+  },
+  centerPanel: {
     flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
-  memoryText: {
-    flex: 1,
-    color: Colors.text,
-    fontSize: 18,
+  memoryDate: {
+    color: String(Colors.text),
+    fontSize: 12,
+    alignItems: 'flex-start',
   },
-  acion: {
-    width: 20,
-    margin: 4,
-    padding: 8,
-    justifyContent: 'center',
+  memoryDateText: {
+    fontSize: 10,
+    color: '#cccccc'
   },
-  actionButton: {
+  memoryContent: {
+    alignItems: 'flex-start',
+  },
+  memoryContentText: {
+    color: String(Colors.text),
+    fontSize: 16,
+  },
+  actionStrip: {
 
   },
-  extra: {
-
-  },
-  extraFlag: {
-
-  },
-  icon: {
-    fontSize: 20,
-    color: '#C0C0C0',
-  }
 });

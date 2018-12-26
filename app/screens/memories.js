@@ -9,25 +9,24 @@ import { Colors } from '../scripts/styles';
 
 export default class Memories extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      initialMemoryArray: [],
-      memoryArray: [],
+      initialMemories: [],
+      memories: [],
       tags: {},
       searchTerm: '',
     }
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
-    navigation.addListener('willFocus', () => {
+    this.props.navigation.addListener('willFocus', () => {
       MemoryStore.get().then(memories => {
+        console.log('memories',memories);
         HashtagStore.get().then((tags) => {
-          this.setState({'memoryArray': memories, initialMemoryArray: memories, tags});
+          this.setState({'memories': memories, initialMemories: memories, tags});
         });
       });
-
     });
     this.props.navigation.navigate('EditMemory');
   }
@@ -37,11 +36,11 @@ export default class Memories extends React.Component {
   toggleDone = (id) => this.toggle(id,'done');
 
   toggle = (id, key) => {
-    let memoryArray = _.clone(this.state.memoryArray);
-    let memory = _.find(memoryArray, {id});
+    let memories = _.clone(this.state.memories);
+    let memory = _.find(memories, {id});
     memory[key] = !memory[key];
     MemoryStore.update(id, memory).then(() => {
-      this.setState({memoryArray});
+      this.setState({memories});
     });
   }
 
@@ -51,10 +50,10 @@ export default class Memories extends React.Component {
 
   deleteMemory = (id, memoryText) => {
     const memoryRemoval = (id) => {
-      let memoryArray = (Object.assign([], this.state.memoryArray));
-      memoryArray.splice(id, 1);
+      let memories = (Object.assign([], this.state.memories));
+      memories.splice(id, 1);
       MemoryStore.delete(id);
-      this.setState({'memoryArray': this.state.memoryArray});
+      this.setState({'memories': this.state.memories});
     };
     Alert.alert(
       'Delete this memory?',
@@ -68,8 +67,8 @@ export default class Memories extends React.Component {
   }
 
   search = _.throttle((searchTerm) => {
-    MemoryStore.search(searchTerm).then(memoryArray => {
-      this.setState({memoryArray});
+    MemoryStore.search(searchTerm).then(memories => {
+      this.setState({memories});
     });
   }, 600);
 
@@ -83,8 +82,6 @@ export default class Memories extends React.Component {
       onDeletePress={this.deleteMemory}
     />
   );
-
-  keyExtractor = (item, index) => String(item.id);
 
   render() {
     return (
@@ -100,9 +97,9 @@ export default class Memories extends React.Component {
 
         <FlatList
           style={styles.body}
-          data={this.state.memoryArray}
+          data={this.state.memories}
           extraData={this.state}
-          keyExtractor={this.keyExtractor}
+          keyExtractor={item => String(item.id)}
           renderItem={this.renderMemory}
         />
 
