@@ -3,8 +3,7 @@ import {Platform, Alert, StyleSheet, AsyncStorage, View, ScrollView, FlatList, T
 import Icon from 'react-native-vector-icons/Feather';
 import _ from 'lodash';
 import MemoryListItem from '../components/memory-list-item';
-import MemoryStore from '../store/memory.store';
-import HashtagStore from '../store/hashtag.store';
+import { MemoryStore, HashtagStore } from '../stores';
 import { Colors } from '../scripts/styles';
 
 export default class Memories extends React.Component {
@@ -35,10 +34,10 @@ export default class Memories extends React.Component {
 
   toggleDone = (id) => this.toggle(id,'done');
 
-  toggle = (id, key) => {
-    let memories = _.clone(this.state.memories);
-    let memory = _.find(memories, {id});
-    memory[key] = !memory[key];
+  toggle = (id, attr) => {
+    const memories = _.clone(this.state.memories);
+    const memory = _.find(memories, {id});
+    memory[attr] = !memory[attr];
     MemoryStore.update(id, memory).then(() => {
       this.setState({memories});
     });
@@ -50,10 +49,9 @@ export default class Memories extends React.Component {
 
   deleteMemory = (id, memoryText) => {
     const memoryRemoval = (id) => {
-      let memories = (Object.assign([], this.state.memories));
-      memories.splice(id, 1);
+      const memories = _.reject(this.state.memories, {id});
       MemoryStore.delete(id);
-      this.setState({'memories': this.state.memories});
+      this.setState({'memories': memories});
     };
     Alert.alert(
       'Delete this memory?',
