@@ -12,6 +12,7 @@ export default class LocalStorage {
     return new Promise((resProm, errProm) => {
       AsyncStorage.getItem(key, (error, data) => {
         if(error) {
+          console.error(`GET ERROR: ${error}`);
           if(resCB) resCB(null, error);
           errProm(error);
         } else {
@@ -27,6 +28,7 @@ export default class LocalStorage {
     return new Promise((resProm, errProm) => {
       AsyncStorage.getItem(key, (error, data) => {
         if(error) {
+          console.error(`GET ONE ERROR: ${error}`);
           if(resCB) resCB(null, error);
           errProm(error);
         } else if(data) {
@@ -42,6 +44,7 @@ export default class LocalStorage {
     return new Promise((resProm, errProm) => {
       AsyncStorage.getItem(key, (error, data) => {
         if(error) {
+          console.error(`CREATE ERROR: ${error}`);
           if(resCB) resCB(null, error);
           errProm(error);
         } else {
@@ -50,6 +53,7 @@ export default class LocalStorage {
           dataArray.unshift(dataItem);
           AsyncStorage.setItem(key, JSON.stringify(dataArray), (error) => {
             if(error) {
+              console.error(`CREATE ERROR: ${error}`);
               if(resCB) resCB(dataArray, error);
               errProm(error);
             } else {
@@ -94,6 +98,7 @@ export default class LocalStorage {
     return new Promise((resProm, errProm) => {
       AsyncStorage.getItem(key, (error, data) => {
         if(error) {
+          console.error(`UPDATE ERROR: ${error}`);
           if(resCB) resCB(null, error);
           errProm(error);
         } else if(data) {
@@ -123,11 +128,12 @@ export default class LocalStorage {
     return new Promise((resProm, errProm) => {
       AsyncStorage.getItem(key, (error, data) => {
         if(error) {
+          console.error(`UPDATE ALL ERROR: ${error}`);
           if(resCB) resCB(null, error);
           errProm(error);
-        } else if(data) {
-          if(dataArray.length != JSON.parse(data).length) {
-            error = `UPDATE ALL ERROR: ${key} items provided do not match the stored items.`;
+        } else {
+          if(dataArray.length < (JSON.parse(data) || []).length) {
+            error = `UPDATE ALL ERROR: There are less ${key} items provided than stored items.`;
             console.error(error);
             if(resCB) resCB(null, error);
             errProm(error);
@@ -142,11 +148,6 @@ export default class LocalStorage {
               }
             });
           }
-        } else {
-          error = `UPDATE ALL ERROR: No ${key} item found with id=${id}.`;
-          console.error(error);
-          if(resCB) resCB(null, error);
-          errProm(error);
         }
       });
     });
@@ -156,6 +157,7 @@ export default class LocalStorage {
     return new Promise((resProm, errProm) => {
       AsyncStorage.getItem(key, (error, data) => {
         if(error) {
+          console.error(`DELETE ERROR: ${error}`);
           if(resCB) resCB(null, error);
           errProm(error);
         } else if(data) {
@@ -164,6 +166,7 @@ export default class LocalStorage {
           dataArray.splice(index, 1);
           AsyncStorage.setItem(key, JSON.stringify(dataArray), (error) => {
             if(error) {
+              console.error(`DELETE ERROR: ${error}`);
               if(resCB) resCB(dataArray, error);
               errProm(error);
             } else {
@@ -185,6 +188,7 @@ export default class LocalStorage {
     return new Promise((resProm, errProm) => {
       AsyncStorage.removeItem(key, (error) => {
         if(error) {
+          console.error(`NUKE ERROR: ${error}`);
           if(resCB) resCB({}, error);
           errProm(error);
         } else {

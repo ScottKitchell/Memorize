@@ -1,8 +1,9 @@
 import LocalStorage from './local-storage';
 import HashtagStore from './hashtag.store';
 import { partial, words, filter, sortBy } from 'lodash';
+import moment from 'moment';
 
-const MEMORIES = 'memoryArray';
+const MEMORIES = 'memoryStore';
 
 export default class MemoryStore {
 
@@ -26,12 +27,14 @@ export default class MemoryStore {
   };
 
   static create = (memory, resCB) => {
+    memory.createdAt = memory.updatedAt = moment().unix();
     return LocalStorage.create(MEMORIES, memory, resCB).then(() => {
       HashtagStore.add(memory.tags);
-    })
+    });
   }
 
   static update = (id, memory, resCB) => {
+    memory.updatedAt = moment().unix();
     LocalStorage.getOne(MEMORIES, id).then((prevMemory) => {
       HashtagStore.subtract(prevMemory.tags);
     });
