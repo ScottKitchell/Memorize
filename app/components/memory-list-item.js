@@ -25,7 +25,7 @@ export default class MemoryListItem extends React.Component {
     const rightButtons = [{
       text: 'Delete',
       type: 'delete',
-      backgroundColor: String(Colors.red),
+      backgroundColor: Colors.red.light,
       onPress: () => this.props.onDeletePress(id, memory.text),
     }];
 
@@ -91,12 +91,6 @@ const styles = StyleSheet.create({
   done: {
     backgroundColor: '#fbfbfb',
   },
-  flagged: {
-    backgroundColor: Colors.grey.light,
-  },
-  selected: {
-    color: String(Colors.green),
-  },
   main: {
     flexDirection: 'row',
     paddingTop: 16,
@@ -122,7 +116,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   memoryDate: {
-    color: String(Colors.text),
+    color: Colors.text.default,
     fontSize: 12,
     alignItems: 'flex-start',
   },
@@ -134,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   memoryContentText: {
-    color: String(Colors.text),
+    color: Colors.text.default,
     fontSize: 16,
   },
   actionStrip: {

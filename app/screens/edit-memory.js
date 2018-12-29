@@ -9,7 +9,7 @@ import EditMemoryToolbar from '../components/edit-memory-toolbar';
 import MemoryStore from '../store/memory.store';
 import HashtagStore from '../store/hashtag.store';
 import { hashtagsIn } from '../scripts/hashtags';
-import Styles from '../scripts/styles';
+import { Colors } from '../scripts/styles';
 import moment from 'moment';
 import { forEach } from 'lodash';
 

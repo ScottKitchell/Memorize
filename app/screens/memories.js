@@ -86,7 +86,7 @@ export default class Memories extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor={Colors.primary} barStyle="dark-content"/>
+        <StatusBar backgroundColor={Colors.header.dark} barStyle="light-content"/>
         <View style={styles.memoryInput}>
           <TextInput style={styles.textInput} placeholder="Search Memories" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
             onChangeText={this.search} />
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   memoryInput: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.primary.light,
     borderBottomWidth: 1,
     borderBottomColor: '#EEE',
     padding: 12,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     textAlignVertical: 'top',
     fontSize: 18,
-    color: Colors.text.onDark,
+    color: Colors.text.onDark.default,
     padding: 6,
     paddingLeft: 10,
     backgroundColor: Colors.overlay.light,

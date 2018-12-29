@@ -8,36 +8,41 @@ import User from './screens/user';
 import EditMemory from './screens/edit-memory';
 import { Colors } from './scripts/styles';
 
+const MEMORIES = 'Memories';
+const FLAGS = 'Flags';
+const ACCOUNT = 'Account'
+
 const TabNavigator = createBottomTabNavigator({
-  Memories:  Memories,
-  Flags:  FlaggedMemories,
-  Reflection:  User,
+  [MEMORIES]:  Memories,
+  [FLAGS]:  FlaggedMemories,
+  [ACCOUNT]:  User,
 },
 {
-  navigationOptions: ({ navigation }) => ({
+  defaultNavigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, tintColor }) => {
       const { routeName } = navigation.state;
       let iconName;
-      if (routeName === 'Memories') {
-        iconName = 'calendar';
-      } else if (routeName === 'Flags') {
-        iconName = 'flag';
-      } else if (routeName === 'Reflection') {
-        iconName = 'user';
-      }
-      return <Icon name={iconName} size={24} color={focused? Colors.primary : Colors.grey} />;
+      if (routeName === MEMORIES) {
+        iconName = `feature-search${focused? '' : '-outline'}`;
+      } else if (routeName === FLAGS) {
+        iconName = `flag${focused? '' : '-outline'}`;
+      } else if (routeName === ACCOUNT) {
+        iconName = `account${focused? '' : '-outline'}`;
+      };
+      return <Icon name={iconName} size={24} color={tintColor} />;
     },
   }),
   tabBarOptions: {
-    activeTintColor: Colors.primary,
-    inactiveTintColor: Colors.grey,
+    activeTintColor: Colors.tabBar.activeIcon,
+    inactiveTintColor: Colors.tabBar.inactiveIcon,
+    showLabel: false,
     style: {
       height: 56,
-      backgroundColor: '#FFF'
+      backgroundColor: Colors.tabBar.background
     },
-    labelStyle: {
-      marginBottom: 6,
-    }
+    // labelStyle: {
+    //   marginBottom: 6,
+    // }
   },
 });
 
@@ -59,7 +64,7 @@ const AppNavStack = createStackNavigator({
 {
   navigationOptions: {
     header: null,
-    animationEnabled: true,
+    animationEnabled: false,
   }
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import { Icon, ToggleIcon } from './icons';
 
 type Props = {};
 export default class EditMemoryToolbar extends React.Component<Props> {
@@ -20,12 +20,14 @@ export default class EditMemoryToolbar extends React.Component<Props> {
 
         <View>
           <TouchableOpacity style={styles.item} onPress={this.props.toggleDone} >
-            <Icon name="check-circle" size={24} style={this.props.done? styles.selected : {}}/>
+            <Icon name="check" size={24} style={this.props.done? styles.selected : {}}/>
           </TouchableOpacity>
         </View>
 
         <View style={{flex:1}}>
-
+          <TouchableOpacity style={styles.item} onPress={this.props.toggleDone} >
+            <ToggleIcon toggled={this.props.done} name="feature-search-outline" toggledName="feature-search" size={24} style={this.props.done? styles.selected : {}}/>
+          </TouchableOpacity>
         </View>
 
         <View>

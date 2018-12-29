@@ -1,42 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TouchableWithoutFeedback, View } from 'react-native';
-import NativeIcon from 'react-native-vector-icons/Feather';
+import NativeIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+export const Icon = NativeIcon;
 
-export function Icon(props) {
-  const { color, ...otherProps } = props;
-  return <NativeIcon color={String(color)} {...otherProps} />
+export function ToggleIcon(props) {
+  const name = (props.toggled && props.toggledName)? props.toggledName : props.name;
+  const color = (props.toggled && props.toggledColor)? props.toggledColor : props.color;
+  const style = (props.toggled && props.toggledStyle)? props.toggledStyle : props.style;
+  return (
+    <NativeIcon name={name} size={props.size} color={color} style={style}/>
+  );
 }
-
-export class ToggleIcon extends React.Component {
-
-  static propTypes = {
-    style: PropTypes.object,
-    toggled: PropTypes.bool.isRequired,
-    name: PropTypes.string.isRequired,
-    toggledName: PropTypes.string.isRequired,
-    color: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
-    toggledColor: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
-    size: PropTypes.number,
-    onPress: PropTypes.func,
-  }
-
-  constructor(props){
-    super(props);
-  }
-
-  render() {
-    const name = this.props.toggled? this.props.toggledName : this.props.name;
-    const color = (this.props.toggled && this.props.toggledColor)? this.props.toggledColor : this.props.color;
-    const width = this.props.size? this.props.size+10 : 20;
-    return (
-      <View style={[{width: width}, this.props.style]}>
-      <TouchableWithoutFeedback onPress={this.props.onPress} >
-        <Icon name={name} size={this.props.size} color={String(color)}/>
-      </TouchableWithoutFeedback>
-    </View>
-    );
-  }
-
+ToggleIcon.propTypes = {
+  toggled: PropTypes.bool.isRequired,
+  style: PropTypes.object,
+  toggledStyle: PropTypes.object,
+  name: PropTypes.string.isRequired,
+  toggledName: PropTypes.string.isRequired,
+  color: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
+  toggledColor: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
+  size: PropTypes.number,
 }

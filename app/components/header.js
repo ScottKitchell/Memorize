@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     height: 56,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.header.light,
     borderBottomWidth: 0,
     borderBottomColor: '#EEE',
     padding: 4,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   itemText: {
-    color: Colors.text.onDark,
+    color: Colors.text.onDark.default,
     fontSize: 18,
   },
   title: {
@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.text.onDark,
+    color: Colors.text.onDark.default,
   },
   icon: {
     fontSize: 24,
-    color: Colors.text.onDark,
+    color: Colors.text.onDark.default,
   }
 });

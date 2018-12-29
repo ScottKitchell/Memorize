@@ -1,73 +1,85 @@
-//Colors at http://www.color-hex.com/color-palette/17804
+//Colors at https://flatuicolors.com/palette/au
 // http://www.0to255.com/
-export const Colors = {
-  text: {
-    soft: 'rgba(0, 0, 0, 0.68)',
-    toString: ()=>'rgba(0, 0, 0, 0.75)',
-    strong: 'rgba(0, 0, 0, 0.88)',
-    onDark: {
-      soft: 'rgba(255, 255, 255, 0.68)',
-      toString: ()=>'rgba(255, 255, 255, 0.78)',
-      strong: 'rgba(255, 255, 255, 0.88)',
-    }
+const rgba = (red, green, blue) => (opacity=0.9) => `rgba(0, 0, 0, ${opacity})`;
+
+const PALETTE = {
+  purple: {
+    light: '#e056fd',
+    dark: '#be2edd',
   },
-  primary: {
-    xLight: '#a16fbe',
-    light: '#9157b4',
-    toString: ()=>'#8048A1',
-    dark: '#6d3e8a',
-    xDark: '#5b3372',
-  },
-  grey: {
-    xLight: '#f6f6f6',
-    light: '#e5e5e5',
-    toString: ()=>'#d4d4d4',
-    dark: '#c3c3c3',
-    xDark: '#b2b2b2',
+  blueGreen: {
+    light: '#7ed6df',
+    dark: '#22a6b3',
   },
   green: {
-    xLight: '#b7d47a',
-    light: '#a9cb61',
-    toString: ()=>'#9bc347',
-    dark: '#89af39',
-    xDark: '#759531',
-  },
-  blue: {
-    xLight: '#7dbad4',
-    light: '#64adcb',
-    toString: ()=>'#4a9fc3',
-    dark: '#3b8db1',
-    xDark: '#327997',
-  },
-  yellow: {
-    xLight: '#dfcf78',
-    light: '#d9c55c',
-    toString: ()=>'#d2bb41',
-    dark: '#c3ab2e',
-    xDark: '#a79328',
+    light: '#badc58',
+    dark: '#6ab04c',
   },
   red: {
-    xLight: '#d77676',
-    light: '#cf5c5c',
-    toString: ()=>'#c74242',
-    dark: '#b23535',
-    xDark: '#982d2d',
+    light: '#ff7979',
+    dark: '#eb4d4b',
   },
-  overlay: {
-    light: 'rgba(255, 255, 255, 0.06)',
-    dark: 'rgba(0, 0, 0, 0.06)',
+  yellow: {
+    light: '#f6e58d',
+    dark: '#f9ca24',
   },
+  orange: {
+    light: '#ffbe76',
+    dark: '#f0932b',
+  },
+  deepBlue: {
+    light: '#30336b',
+    dark: '#130f40',
+  },
+  blueGrey: {
+    light: '#dff9fb',
+    dark: '#c7ecee',
+  },
+  deepGrey: {
+    light: '#95afc0',
+    dark: '#535c68',
+  },
+  lightGrey: {
+    light: '#eeeeee',
+    dark: '#dddddd',
+  },
+  white: {
+    light: '#ffffff',
+    dark: '#f0f0f0',
+    _transparent: rgba(255,255,255),
+  },
+  black: {
+    light: '#0f0f0f',
+    dark: '#000000',
+    _transparent: rgba(0,0,0),
+  }
 };
 
-export const MemoryMatchStyles = [
-  {
-    match:/#(\w+)/g, style: { // Hashtag
-      color: Colors.red.light
+export const Colors = {
+  ...PALETTE,
+  text: {
+    soft: PALETTE.black._transparent(0.68),
+    default: PALETTE.black._transparent(0.75),
+    strong: PALETTE.black._transparent(0.88),
+    onDark: {
+      soft: PALETTE.white._transparent(0.68),
+      default: PALETTE.white._transparent(0.75),
+      strong: PALETTE.white._transparent(0.88),
     }
+  },
+  primary: PALETTE.purple,
+  background: PALETTE.white.light,
+  border: PALETTE.lightGrey.light,
+  overlay: {
+    white: PALETTE.white._transparent(0.06),
+    black: PALETTE.black._transparent(0.06),
+  },
+  header: {
+    light: PALETTE.white.light,
+  },
+  tabBar: {
+    activeIcon: PALETTE.purple.light,
+    inactiveIcon: PALETTE.lightGrey.dark,
+    background: PALETTE.white.light,
   }
-];
-
-export default {
-  colors: Colors,
-  memoryMatchStyles: MemoryMatchStyles,
-}
+};
