@@ -20,11 +20,12 @@ export default class Memories extends React.Component {
 
   componentDidMount() {
     this.props.navigation.addListener('willFocus', () => {
-      MemoryStore.get().then(memories => {
+      MemoryStore.all().then(memories => {
         console.log('memories',memories);
-        HashtagStore.get().then((tags) => {
-          this.setState({'memories': memories, initialMemories: memories, tags});
-        });
+        this.setState({'memories': memories, initialMemories: memories, tags: []});
+        // HashtagStore.all().then((tags) => {
+        //   this.setState({'memories': memories, initialMemories: memories, tags});
+        // });
       });
     });
     this.props.navigation.navigate('EditMemory');
@@ -38,7 +39,7 @@ export default class Memories extends React.Component {
     const memories = _.clone(this.state.memories);
     const memory = _.find(memories, {id});
     memory[attr] = !memory[attr];
-    MemoryStore.update(id, memory).then(() => {
+    MemoryStore.save(memory).then(() => {
       this.setState({memories});
     });
   }

@@ -6,8 +6,7 @@ import { RichTextInput } from '../components/rich-text';
 import { Icon, ToggleIcon } from '../components/icons';
 import Header from '../components/header';
 import EditMemoryToolbar from '../components/edit-memory-toolbar';
-import MemoryStore from '../stores/memory.store';
-import HashtagStore from '../stores/hashtag.store';
+import { MemoryStore, HashtagStore } from '../stores';
 import { hashtagsIn } from '../scripts/hashtags';
 import { Colors } from '../scripts/styles';
 import moment from 'moment';
@@ -37,20 +36,20 @@ export default class EditMemory extends React.Component {
   componentDidMount() {
     const id = this.props.navigation.getParam('id', -1);
     if(id>=0) {
-      MemoryStore.getOne(id).then(memory => {
+      MemoryStore.get(id).then(memory => {
         this.setState({
           isEditing: true,
+          memoryId: memory.id,
           memoryText: memory.text,
           memoryFlag: memory.flag,
           memoryDone: memory.done,
-          memoryCreatedAt: memory.createdAt,
         });
       });
     }
-    HashtagStore.get().then((topHashtags) => {
-      console.log('topHashtags',topHashtags);
-      this.setState({topHashtags});
-    });
+    // HashtagStore.all().then((topHashtags) => {
+    //   console.log('topHashtags',topHashtags);
+    //   this.setState({topHashtags});
+    // });
   }
 
   saveMemory() {
@@ -68,21 +67,16 @@ export default class EditMemory extends React.Component {
       console.log('update memory',memory);
       const {id} = this.props.navigation.state.params;
       memory.id = id;
-      MemoryStore.update(id, memory).then(()=>{
-        this.savedToast();
-        this.closeScreen();
-      }).catch((err)=>{
-        Alert.alert(err);
-      });
     } else {
       console.log('save new memory',memory);
-      MemoryStore.create(memory).then(()=>{
-        this.savedToast();
-        this.resetState();
-      }).catch((err)=>{
-        Alert.alert(err);
-      });
     }
+    MemoryStore.save(memory).then(()=>{
+      this.savedToast();
+      this.closeScreen();
+    }).catch((err)=>{
+      console.error(err);
+      Alert.alert("That didn't save... try again.");
+    });
   }
 
   savedToast(){

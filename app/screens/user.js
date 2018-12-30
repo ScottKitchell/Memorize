@@ -49,7 +49,7 @@ export default class User extends React.Component {
     return (
       <View style={styles.container}>
         <Text><Icon name='user'/> Reflection</Text>
-        <Button title="Delete all memories" onPress={()=>MemoryStore.nuke()}/>
+        <Button title="Delete all memories" onPress={()=>MemoryStore.destroy()}/>
       </View>
     );
   }
