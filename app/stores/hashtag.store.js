@@ -1,47 +1,42 @@
-import LocalStorage from './local-storage';
+import AbstractStore from './base.store';
 import _ from 'lodash';
 
-const HASHTAGS = 'hashtagStore';
 
-export default class HashtagStore {
+export default class HashtagStore extends AbstractStore {
 
-  static get = _.partial(LocalStorage.get, HASHTAGS);
-
-  static getTop = (number, resCB) => {
-    return new Promise((resProm, errProm) => {
-      DB.get().then((tags) => {
-        const index = (_.size(tags) <= number)? 0 : -1*number;
-        tags = _.reverse(_.slice(_.sortBy(tags,'count')),index);
-        resProm(tags);
-        if(resCB) resCB(tags);
-      });
-    });
+  static async getTop(number, existingDataArray=undefined) {
+    const hashtags = existingDataArray || await this.all();
+    const sorted = _.sortByOrder(hashtags,['count'], ['desc']);
+    return sorted.slice(0, number);
   }
 
-  static add = (tags, resCB) => {
-    LocalStorage.get(HASHTAGS).then((tagCounts) => {
-      tagCounts = tagCounts || {};
-      _.forEach(tags, (tag) => {
-        tag = tag.replace(/^#/, '').toLowerCase();
-
-        if (tagCounts[tag]) tagCounts[tag].count++;
-        else tagCounts[tag] = {id:tag, count: 1};
-      });
-      return LocalStorage.dangerouslyUpdateAll(HASHTAGS, tags, resCB)
+  static async bulkAdd(tags, existingDataArray=undefined) {
+    const hashtagArray = existingDataArray || await this.all();
+    const hashtags = _.keyBy(hashtagArray, 'tag');
+    let updatedHashtags = [];
+    _.forEach(tags, (tag) => {
+      const key = tag.replace(/^#/, '').toLowerCase();
+      if (hashtags[key])
+        hashtags[key].count++;
+      else
+        hashtags[key] = {id:key, count: 1};
+      updatedHashtags.push(hashtags[key]);
     });
+    return this.bulkSave(updatedHashtags);
   }
 
-  static subtract = (hashtags, resCB) => {
-    LocalStorage.get(HASHTAGS).then((tags) => {
-      tags = tags || {};
-      _.forEach(hashtags, (tag) => {
-        const lowTag = tag.replace(/^#/, '').toLowerCase();
-        if (tags[lowTag] && tags[lowTag].count > 0) tags[lowTag].count--;
-      });
-      return LocalStorage.dangerouslyUpdateAll(HASHTAGS, tags, resCB)
+  static async bulkSubtract(tags, existingDataArray=undefined) {
+    const hashtagArray = existingDataArray || await this.all();
+    const hashtags = _.keyBy(hashtagArray, 'tag');
+    let updatedHashtags = [];
+    _.forEach(tags, (tag) => {
+      const key = tag.replace(/^#/, '').toLowerCase();
+      if (hashtags[key]) {
+        hashtags[key].count--;
+        updatedHashtags.push(hashtags[key]);
+      }
     });
+    return this.bulkSave(updatedHashtags);
   }
-
-  static nuke = _.partial(LocalStorage.nuke, HASHTAGS);
 
 }
