@@ -1,6 +1,6 @@
 //Colors at https://flatuicolors.com/palette/au
 // http://www.0to255.com/
-const rgba = (red, green, blue) => (opacity=0.9) => `rgba(0, 0, 0, ${opacity})`;
+const rgba = (r, g, b) => (opacity=0.9) => `rgba(${r}, ${g}, ${b}, ${opacity})`;
 
 const PALETTE = {
   purple: {
@@ -61,10 +61,12 @@ export const Colors = {
     soft: PALETTE.black._transparent(0.68),
     default: PALETTE.black._transparent(0.75),
     strong: PALETTE.black._transparent(0.88),
+    solid: PALETTE.black.dark,
     onDark: {
       soft: PALETTE.white._transparent(0.68),
       default: PALETTE.white._transparent(0.75),
       strong: PALETTE.white._transparent(0.88),
+      solid: PALETTE.white.light,
     }
   },
   primary: PALETTE.purple,
@@ -78,7 +80,7 @@ export const Colors = {
     light: PALETTE.white.light,
   },
   tabBar: {
-    activeIcon: PALETTE.purple.light,
+    activeIcon: PALETTE.purple.dark,
     inactiveIcon: PALETTE.lightGrey.dark,
     background: PALETTE.white.light,
   }

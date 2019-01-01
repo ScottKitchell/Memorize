@@ -13,10 +13,12 @@
     "react": "^16.6.3",
     "react-native": "^0.57.8",
     "react-native-gesture-handler": "^1.0.12",
+    "react-native-paper": "^2.4.0",
     "react-native-parsed-text": "^0.0.21",
     "react-native-swipeout": "^2.3.6",
     "react-native-vector-icons": "^6.1.0",
-    "react-navigation": "^3.0.9"
+    "react-navigation": "^3.0.9",
+    "react-navigation-material-bottom-tabs": "^1.0.0"
   },
   "devDependencies": {
     "metro-react-native-babel-preset": "^0.51.1",
