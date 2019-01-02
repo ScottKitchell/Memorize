@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import { Colors } from '../scripts/styles';
+import { Colors } from 'app/styles';
 
 type Props = {};
 export default class Header extends React.Component<Props> {
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   itemText: {
-    color: Colors.text.onDark.default,
+    color: Colors.text.default,
     fontSize: 18,
   },
   title: {
@@ -60,10 +60,10 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.text.onDark.default,
+    color: Colors.text.default,
   },
   icon: {
     fontSize: 24,
-    color: Colors.text.onDark.default,
+    color: Colors.text.default,
   }
 });

@@ -18,7 +18,7 @@ ToggleIcon.propTypes = {
   style: PropTypes.object,
   toggledStyle: PropTypes.object,
   name: PropTypes.string.isRequired,
-  toggledName: PropTypes.string.isRequired,
+  toggledName: PropTypes.string,
   color: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
   toggledColor: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
   size: PropTypes.number,

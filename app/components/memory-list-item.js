@@ -3,8 +3,8 @@ import {Platform, StyleSheet, Text, View, TextInput, TouchableHighlight, Touchab
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
 import ParsedText from 'react-native-parsed-text';
-import { Icon, ToggleIcon } from './icons';
-import { Colors } from '../scripts/styles';
+import { Icon, ToggleIcon } from './generic/icons';
+import { Colors } from 'app/styles';
 import moment from 'moment';
 
 export default class MemoryListItem extends React.Component {

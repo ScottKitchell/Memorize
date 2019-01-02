@@ -2,11 +2,11 @@ import React from 'react';
 import {Platform, Alert, StyleSheet, AsyncStorage, View, ScrollView, FlatList, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import _ from 'lodash';
-import MemoryListItem from '../components/memory-list-item';
-import { MemoryStore, HashtagStore } from '../stores';
-import { Colors } from '../scripts/styles';
+import MemoryListItem from 'app/components/memory-list-item';
+import { MemoryStore, HashtagStore } from 'app/stores';
+import { Colors } from 'app/styles';
 
-export default class Memories extends React.Component {
+export default class MemoriesScreen extends React.Component {
 
   constructor(props) {
     super(props);

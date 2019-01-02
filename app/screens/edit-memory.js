@@ -1,14 +1,10 @@
 import React from 'react';
 import { Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button } from 'react-native';
-// import ParsedText from 'react-native-parsed-text';
-// import RichText from '../components/rich-text';
-import { RichTextInput } from '../components/rich-text';
-import { Icon, ToggleIcon } from '../components/icons';
-import Header from '../components/header';
-import EditMemoryToolbar from '../components/edit-memory-toolbar';
-import { MemoryStore, HashtagStore } from '../stores';
-import { hashtagsIn } from '../scripts/hashtags';
-import { Colors } from '../scripts/styles';
+import { Icon, ToggleIcon } from 'app/components/generic/icons';
+import Header from 'app/components/header';
+import EditMemoryToolbar from 'app/components/edit-memory-toolbar';
+import { MemoryStore, HashtagStore } from 'app/stores';
+import { Colors } from 'app/styles';
 import moment from 'moment';
 import { forEach } from 'lodash';
 
@@ -26,7 +22,7 @@ const initialState = {
 };
 
 
-export default class EditMemory extends React.Component {
+export default class EditMemoryScreen extends React.Component {
 
   constructor(props){
     super(props);
@@ -57,7 +53,7 @@ export default class EditMemory extends React.Component {
     const tags = this.state.memoryText.match(/#(\w+)/g);
     let memory = {
       text: this.state.memoryText,
-      tags: hashtagsIn(this.state.memoryText),
+      tags: this.getHashtagsFromText(this.state.memoryText),
       triggers: ["22-2222"],
       flag: this.state.memoryFlag,
       done: this.state.memoryDone,
@@ -77,6 +73,12 @@ export default class EditMemory extends React.Component {
       console.error(err);
       Alert.alert("That didn't save... try again.");
     });
+  }
+
+  getHashtagsFromText = (text) => {
+    const regex = /#(\w+)/g;
+    const hashtags = _.map(text.match(regex), (tag) => _.toLower(tag));
+    return _.uniq(hashtags);
   }
 
   savedToast(){

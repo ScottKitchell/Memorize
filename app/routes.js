@@ -2,17 +2,17 @@ import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { createBottomTabNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { Icon } from './components/icons';
-import Memories from './screens/memories';
-import FlaggedMemories from './screens/flagged-memories';
-import User from './screens/user';
-import EditMemory from './screens/edit-memory';
-import { Colors } from './scripts/styles';
+import { Icon } from './components/generic/icons';
+import MemoriesScreen from './screens/memories';
+import FlaggedMemoriesScreen from './screens/flagged-memories';
+import AccountScreen from './screens/user';
+import EditMemoryScreen from './screens/edit-memory';
+import { Colors } from './styles';
 
 export const ROUTES = {
   TABS: {
     toString: ()=>'Tabs',
-    MEMORIES: 'Memories',
+    MEMORIES: 'MemoriesScreen',
     FLAGS: 'Flags',
     ACCOUNT: 'Account',
   },
@@ -22,9 +22,9 @@ export const ROUTES = {
 };
 
 // const TabNavigator = createBottomTabNavigator({
-//   [ROUTES.TABS.MEMORIES]:  Memories,
-//   [ROUTES.TABS.FLAGS]:  FlaggedMemories,
-//   [ROUTES.TABS.ACCOUNT]:  User,
+//   [ROUTES.TABS.MEMORIES]:  MemoriesScreen,
+//   [ROUTES.TABS.FLAGS]:  FlaggedMemoriesScreen,
+//   [ROUTES.TABS.ACCOUNT]:  AccountScreen,
 // },
 // {
 //   defaultNavigationOptions: ({ navigation }) => ({
@@ -58,7 +58,7 @@ const tabBarIcon = (iconName) => ({ tintColor, focused }) => (
 
 const TabNavigator = createMaterialBottomTabNavigator({
   [ROUTES.TABS.MEMORIES]:  {
-    screen: Memories,
+    screen: MemoriesScreen,
     navigationOptions: {
         // title: I18n.t('homeTitle'),
         // tabBarLabel: I18n.t('homeTabTitle'),
@@ -67,13 +67,13 @@ const TabNavigator = createMaterialBottomTabNavigator({
       }
   },
   [ROUTES.TABS.FLAGS]: {
-    screen: FlaggedMemories,
+    screen: FlaggedMemoriesScreen,
     navigationOptions: {
       tabBarIcon: tabBarIcon('flag'),
     },
   },
   [ROUTES.TABS.ACCOUNT]: {
-    screen: User,
+    screen: AccountScreen,
     navigationOptions: {
       tabBarIcon: tabBarIcon('account'),
     },
@@ -98,7 +98,7 @@ export const AppNavStack = createStackNavigator({
     }
   },
   [ROUTES.EDIT_MEMORY]: {
-    screen: EditMemory,
+    screen: EditMemoryScreen,
     navigationOptions: {
       title: 'Edit Memory',
       header: null,

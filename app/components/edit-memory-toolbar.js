@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { Icon, ToggleIcon } from './icons';
+import { Icon, ToggleIcon } from './generic/icons';
 
 export default function EditMemoryToolbar(props) {
   return (
