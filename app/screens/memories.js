@@ -1,12 +1,12 @@
 import React from 'react';
 import {Platform, Alert, StyleSheet, AsyncStorage, View, ScrollView, FlatList, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
 import _ from 'lodash';
 import MemoryListItem from 'app/components/memory-list-item';
 import { MemoryStore, HashtagStore } from 'app/stores';
 import { Colors } from 'app/styles';
+import { FAB } from 'react-native-paper';
 
-export default class MemoriesScreen extends React.Component {
+export default class Memories extends React.Component {
 
   constructor(props) {
     super(props);
@@ -102,23 +102,35 @@ export default class MemoriesScreen extends React.Component {
           renderItem={this.renderMemory}
         />
 
-        <TouchableOpacity style={styles.newButton} onPress={() => this.props.navigation.navigate('EditMemory')} >
-          <Icon name="plus" size={18} color='#FFF'/>
-        </TouchableOpacity>
+        <AddFAB
+          onPress={() => this.props.navigation.navigate('EditMemory')}
+        />
       </View>
     );
   }
 
 }
 
+function AddFAB(props) {
+  return (
+    <FAB
+      style={styles.addFAB}
+      color={Colors.text.onDark.strong}
+      icon="add"
+      onPress={props.onPress}
+    />
+  );
+}
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   memoryInput: {
-    backgroundColor: Colors.primary.light,
+    backgroundColor: Colors.header.light,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
+    borderBottomColor: Colors.border,
     padding: 12,
   },
   textInput: {
@@ -128,7 +140,7 @@ const styles = StyleSheet.create({
     color: Colors.text.onDark.default,
     padding: 6,
     paddingLeft: 10,
-    backgroundColor: Colors.overlay.light,
+    backgroundColor: Colors.overlay.black,
     borderRadius: 3,
   },
   scrollContainer: {
@@ -154,5 +166,12 @@ const styles = StyleSheet.create({
   newButtonText: {
     fontSize: 22,
     color: '#FFF'
+  },
+  addFAB: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: Colors.primary.dark,
+    color: Colors.text.onDark.strong,
   }
 });

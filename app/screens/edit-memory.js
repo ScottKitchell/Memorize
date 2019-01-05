@@ -1,15 +1,16 @@
 import React from 'react';
-import { Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button } from 'react-native';
-import { Icon, ToggleIcon } from 'app/components/generic/icons';
-import Header from 'app/components/header';
-import EditMemoryToolbar from 'app/components/edit-memory-toolbar';
+import { Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button, KeyboardAvoidingView } from 'react-native';
+import { SocialTextInput } from 'app/components/generic/social-text';
+import { Appbar } from 'react-native-paper';
+import { Icon, FontAwesomeIcon, ToggleIcon } from 'app/components/generic/icons';
 import { MemoryStore, HashtagStore } from 'app/stores';
 import { Colors } from 'app/styles';
 import moment from 'moment';
-import { forEach } from 'lodash';
+import _ from 'lodash';
+import Toolbar from 'app/components/generic/toolbar';
 
 
-const initialState = {
+const INITIAL_STATE = {
   isEditing: false,
   topHashtags: [],
   memoryText: '',
@@ -26,126 +27,165 @@ export default class EditMemoryScreen extends React.Component {
 
   constructor(props){
     super(props);
-    this.state = initialState;
+    this.state = INITIAL_STATE;
+    this.textInputRef = React.createRef();
   }
 
   componentDidMount() {
-    const id = this.props.navigation.getParam('id', -1);
-    if(id>=0) {
-      MemoryStore.get(id).then(memory => {
-        this.setState({
-          isEditing: true,
-          memoryId: memory.id,
-          memoryText: memory.text,
-          memoryFlag: memory.flag,
-          memoryDone: memory.done,
-        });
-      });
-    }
-    // HashtagStore.all().then((topHashtags) => {
-    //   console.log('topHashtags',topHashtags);
-    //   this.setState({topHashtags});
-    // });
+    const id = this.getIdFromRoute();
+    if(id) this.setStateWithExistingMemory(id);
   }
 
-  saveMemory() {
-    if(!this.state.memoryText) return;
-    const tags = this.state.memoryText.match(/#(\w+)/g);
-    let memory = {
-      text: this.state.memoryText,
-      tags: this.getHashtagsFromText(this.state.memoryText),
-      triggers: ["22-2222"],
-      flag: this.state.memoryFlag,
-      done: this.state.memoryDone,
-    };
-
-    if(this.state.isEditing) {
-      console.log('update memory',memory);
-      const {id} = this.props.navigation.state.params;
-      memory.id = id;
-    } else {
-      console.log('save new memory',memory);
-    }
-    MemoryStore.save(memory).then(()=>{
-      this.savedToast();
-      this.closeScreen();
-    }).catch((err)=>{
-      console.error(err);
-      Alert.alert("That didn't save... try again.");
+  setStateWithExistingMemory = (id) => {
+    MemoryStore.get(id).then(memory => {
+      this.setState({
+        isEditing: true,
+        memoryText: memory.text,
+        memoryFlag: memory.flag,
+        memoryDone: memory.done,
+      });
+    }).catch(error => {
+      this.toast("Memory couldn't be found at this time.");
     });
   }
 
-  getHashtagsFromText = (text) => {
+  getIdFromRoute = () => this.props.navigation.getParam('id', null);
+
+  toggleFlag = () => this.setState({memoryFlag: !this.state.memoryFlag});
+
+  toggleDone = () => this.setState({memoryDone: !this.state.memoryDone});
+
+  saveMemory = () => {
+    if(!this.state.memoryText) return;
+    MemoryStore.save(this.getMemoryFromState()).then(memory => {
+      this.toast('memory saved');
+      if (this.state.isEditing)
+        this.closeScreen();
+      else
+        this.resetState()
+    }).catch(error => {
+      this.toast("Memory couldn't be saved at this time.");
+    });
+  }
+
+  deleteMemory = () => {
+    const id = this.getIdFromRoute()
+    MemoryStore.delete(id).then(() => {
+      this.closeScreen();
+    }).catch(error => {
+      this.toast("Memory couldn't be deleted at this time.");
+    });
+  }
+
+  toast = (message) => {
+    ToastAndroid.showWithGravity(message, ToastAndroid.SHORT, ToastAndroid.CENTER);
+  }
+
+  getMemoryFromState = () => ({
+    id: this.getIdFromRoute(),
+    text: this.state.memoryText,
+    tags: this.getHashtagsInMemory(),
+    flag: this.state.memoryFlag,
+    done: this.state.memoryDone,
+  });
+
+  getHashtagsInMemory = () => {
+    const text = this.state.memoryText;
     const regex = /#(\w+)/g;
     const hashtags = _.map(text.match(regex), (tag) => _.toLower(tag));
     return _.uniq(hashtags);
   }
 
-  savedToast(){
-    ToastAndroid.showWithGravity('Memory saved', ToastAndroid.SHORT, ToastAndroid.CENTER);
-  }
+  closeScreen = () => this.props.navigation.goBack();
 
-  resetState() {
-    this.setState(initialState);
-  }
-
-  insertTag(tag) {
-    this.setState({
-      memoryText: this.state.memoryText + '#'+tag,
-      memoryTags: [...this.state.memoryTags, tag]
-    });
-  }
-
-  toggleFlag(toggleOn = !this.state.memoryFlag) {
-    this.setState({
-      'memoryFlag': toggleOn
-    });
-  }
-
-  toggleDone(toggleOn = !this.state.memoryDone) {
-    this.setState({
-      'memoryDone': toggleOn
-    });
-  }
-
-  closeScreen() {
-    this.props.navigation.goBack();
-  }
+  resetState = () => this.setState(INITIAL_STATE);
 
   render() {
     return (
       <View style={styles.container}>
-        <Header
+        <HeaderAppbar
           title={this.state.isEditing? "Edit Memory" : "New Memory"}
-          goBack={() => this.closeScreen()}
+          onBackPress={() => this.closeScreen()}
+          onDeletePress={() => this.deleteMemory()}
+          deleteDisabled={!this.state.isEditing}
         />
 
-        <ScrollView style={styles.body} keyboardShouldPersistTaps="handled">
+        <ScrollView style={styles.body}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.memoryInput}>
-            <TextInput
+            <SocialTextInput
+              ref={this.textInputRef}
               style={styles.textInput}
-              placeholder="#Call mum back"
+              placeholder="What do you want to #remember?"
               placeholderTextColor="#CCC"
               autoFocus={true}
               multiline={true}
               underlineColorAndroid="transparent"
-              returnKeyLabel={'done'}
+              onHashtagEntering={(tag)=>console.log(`tag: "${tag}"`)}
               value={this.state.memoryText}
               onChangeText={memoryText => this.setState({memoryText})}
+              hashtagStyle={{color: Colors.primary.dark}}
+              urlStyle={{color: Colors.primary.dark}}
             />
           </View>
-
-          <View>
-
-          </View>
+          <Appbar style={{backgroundColor:'transparent'}}>
+            <Appbar.Action
+              icon="check"
+              onPress={this.toggleDone}
+              size={28}
+              color={this.state.memoryDone? Colors.primary.dark : Colors.lightGrey.dark}
+            />
+            <Appbar.Action
+              icon="flag"
+              size={28}
+              onPress={this.toggleFlag}
+              color={this.state.memoryFlag? Colors.primary.dark : Colors.lightGrey.dark}
+            />
+          </Appbar>
         </ScrollView>
-
-        <EditMemoryToolbar flag={this.state.memoryFlag} done={this.state.memoryDone} toggleFlag={() => this.toggleFlag()} toggleDone={() => this.toggleDone()} save={() => this.saveMemory()}/>
+        <KeyboardAvoidingView
+          behavior="padding"
+          keyboardVerticalOffset={28}
+          contentContainerStyle={styles.mainToolbar}
+        >
+          <Appbar style={styles.mainToolbarInner}>
+            <Appbar.Action
+              icon={({size})=>(
+                <FontAwesomeIcon name="hashtag" size={18}/>
+              )}
+              onPress={()=>this.textInputRef.current.insertAtCursor('#')}
+              color={Colors.lightGrey.dark}
+            />
+            <View style={{right:0, justifyContent:'flex-end'}}>
+              <Appbar.Action
+                icon="save"
+                onPress={()=>this.saveMemory()}
+                color={Colors.primary.dark}
+              />
+            </View>
+          </Appbar>
+        </KeyboardAvoidingView>
       </View>
     );
   }
-
 }
+
+
+function HeaderAppbar(props) {
+  return (
+    <Appbar.Header style={styles.appbarHeader}>
+      <Appbar.BackAction onPress={props.onBackPress} />
+      <Appbar.Content
+        title={props.title}
+      />
+      {!props.deleteDisabled && (
+        <Appbar.Action icon="delete" onPress={props.onDeletePress} color={Colors.lightGrey.dark} />
+      )}
+    </Appbar.Header>
+  );
+}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -170,7 +210,7 @@ const styles = StyleSheet.create({
     color: '#444',
     padding: 20,
     paddingBottom: 10,
-    minHeight: 100,
+    minHeight: 70,
     backgroundColor: '#FFF',
   },
   tagContainer: {
@@ -193,5 +233,33 @@ const styles = StyleSheet.create({
   },
   flagText: {
     color: '#DA22FF',
+  },
+  appbarHeader: {
+    backgroundColor: Colors.header.light,
+    elevation: 0,
+  },
+  memoryActionbar: {
+    height: 56,
+    borderTopWidth: 0,
+  },
+  memoryActionbar: {
+    height: 56,
+    borderTopWidth: 0,
+  },
+  mainToolbar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 56,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+    backgroundColor: Colors.white.light,
+  },
+  mainToolbarInner: {
+    margin: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.white.light,
   }
 });

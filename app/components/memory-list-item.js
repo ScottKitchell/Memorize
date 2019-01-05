@@ -2,13 +2,12 @@ import React from 'react';
 import {Platform, StyleSheet, Text, View, TextInput, TouchableHighlight, TouchableOpacity, TouchableNativeFeedback} from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
-import ParsedText from 'react-native-parsed-text';
+import { SocialText } from './generic/social-text';
 import { Icon, ToggleIcon } from './generic/icons';
 import { Colors } from 'app/styles';
 import moment from 'moment';
 
 export default class MemoryListItem extends React.Component {
-
   static propTypes = {
     id: PropTypes.number.isRequired,
     memory: PropTypes.object.isRequired,
@@ -55,9 +54,14 @@ export default class MemoryListItem extends React.Component {
                 </Text>
               </View>
               <View style={styles.memoryContent}>
-                <Text style={styles.memoryContentText}>
+                <SocialText
+                  style={styles.memoryContentText}
+                  hashtagStyle={{color: Colors.primary.dark}}
+                  urlStyle={{color: Colors.primary.dark}}
+                  onHashtagPress={(tag)=>console.log('pressed',tag)}
+                  >
                   {memory.text}
-                </Text>
+                </SocialText>
               </View>
               <View style={styles.actionStrip}>
 
