@@ -1,18 +1,18 @@
 import React from 'react';
-import { Platform, Alert, ToastAndroid, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button, KeyboardAvoidingView } from 'react-native';
-import { SocialTextInput } from 'app/components/generic/social-text';
-import { Appbar } from 'react-native-paper';
-import { Icon, FontAwesomeIcon, ToggleIcon } from 'app/components/generic/icons';
-import { MemoryStore, HashtagStore } from 'app/stores';
-import { Colors } from 'app/styles';
-import moment from 'moment';
+import {ToastAndroid, StyleSheet, Text, View, ScrollView, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+import {SocialTextInput} from 'app/components/generic/social-text';
+import {Appbar} from 'react-native-paper';
+import {FontAwesomeIcon} from 'app/components/generic/icons';
+import {MemoryStore, HashtagStore} from 'app/stores';
+import {Colors} from 'app/styles';
 import _ from 'lodash';
 import Toolbar from 'app/components/generic/toolbar';
 
 
 const INITIAL_STATE = {
   isEditing: false,
-  topHashtags: [],
+  hashtagEntered: null,
+  hashtagSuggestions: [],
   memoryText: '',
   memoryTags: [],
   memoryFlags: [],
@@ -51,36 +51,6 @@ export default class EditMemoryScreen extends React.Component {
 
   getIdFromRoute = () => this.props.navigation.getParam('id', null);
 
-  toggleFlag = () => this.setState({memoryFlag: !this.state.memoryFlag});
-
-  toggleDone = () => this.setState({memoryDone: !this.state.memoryDone});
-
-  saveMemory = () => {
-    if(!this.state.memoryText) return;
-    MemoryStore.save(this.getMemoryFromState()).then(memory => {
-      this.toast('memory saved');
-      if (this.state.isEditing)
-        this.closeScreen();
-      else
-        this.resetState()
-    }).catch(error => {
-      this.toast("Memory couldn't be saved at this time.");
-    });
-  }
-
-  deleteMemory = () => {
-    const id = this.getIdFromRoute()
-    MemoryStore.delete(id).then(() => {
-      this.closeScreen();
-    }).catch(error => {
-      this.toast("Memory couldn't be deleted at this time.");
-    });
-  }
-
-  toast = (message) => {
-    ToastAndroid.showWithGravity(message, ToastAndroid.SHORT, ToastAndroid.CENTER);
-  }
-
   getMemoryFromState = () => ({
     id: this.getIdFromRoute(),
     text: this.state.memoryText,
@@ -96,11 +66,62 @@ export default class EditMemoryScreen extends React.Component {
     return _.uniq(hashtags);
   }
 
-  closeScreen = () => this.props.navigation.goBack();
+  handleChangeText = (memoryText) => {
+    this.setState({memoryText});
+  }
+
+  handleHashtagEntering = (hashtagEntered) => {
+    this.searchHashtags(hashtagEntered);
+  }
+
+  searchHashtags = (tag=this.state.hashtagEntered) => {
+    if(typeof tag !== 'string')
+      this.setState({hashtagSuggestions:[]});
+    HashtagStore.search(tag).then((hashtagSuggestions) => {
+      console.log(`searchHashtags - "${tag}" found ${hashtagSuggestions.length} results`);
+      this.setState({hashtagSuggestions});
+    });
+  }
+
+  insertHashtag = (tag) => this.textInputRef.current.autoCompleteWord("#"+tag);
+
+  saveMemory = () => {
+    if(!this.state.memoryText) return;
+    MemoryStore.save(this.getMemoryFromState()).then(memory => {
+      this.toast('memory saved');
+      if (this.state.isEditing)
+        this.closeScreen();
+      else
+        this.resetState();
+    }).catch(error => {
+      this.toast("Memory couldn't be saved at this time.");
+    });
+  }
+
+  deleteMemory = () => {
+    const id = this.getIdFromRoute();
+    MemoryStore.delete(id).then(() => {
+      this.closeScreen();
+    }).catch(error => {
+      this.toast("Memory couldn't be deleted at this time.");
+    });
+  }
+
+  toggleFlag = () => this.setState({memoryFlag: !this.state.memoryFlag});
+
+  toggleDone = () => this.setState({memoryDone: !this.state.memoryDone});
+
+  toast = (message) => {
+    ToastAndroid.showWithGravity(message, ToastAndroid.SHORT, ToastAndroid.CENTER);
+  }
 
   resetState = () => this.setState(INITIAL_STATE);
 
+  closeScreen = () => this.props.navigation.goBack();
+
   render() {
+    if(this.state.hashtagSuggestions.length > 0)
+      console.log(`hashtagSuggestions -`, this.state.hashtagSuggestions);
     return (
       <View style={styles.container}>
         <HeaderAppbar
@@ -117,14 +138,14 @@ export default class EditMemoryScreen extends React.Component {
             <SocialTextInput
               ref={this.textInputRef}
               style={styles.textInput}
-              placeholder="What do you want to #remember?"
+              placeholder="#Call mum back"
               placeholderTextColor="#CCC"
               autoFocus={true}
               multiline={true}
               underlineColorAndroid="transparent"
-              onHashtagEntering={(tag)=>console.log(`tag: "${tag}"`)}
+              onHashtagEntering={this.handleHashtagEntering}
               value={this.state.memoryText}
-              onChangeText={memoryText => this.setState({memoryText})}
+              onChangeText={this.handleChangeText}
               hashtagStyle={{color: Colors.primary.dark}}
               urlStyle={{color: Colors.primary.dark}}
             />
@@ -143,10 +164,26 @@ export default class EditMemoryScreen extends React.Component {
               color={this.state.memoryFlag? Colors.primary.dark : Colors.lightGrey.dark}
             />
           </Appbar>
+          <View style={styles.hashtagSuggestions}>
+            {this.state.hashtagSuggestions.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.hashtagSuggestion}
+                onPress={()=>this.insertHashtag(item.tag)}
+              >
+                <Text style={styles.hashtagSuggestionText} numberOfLines={1}>
+                  #{item.tag}
+                </Text>
+                {/* <Text style={styles.hashtagSuggestionTextSmall} numberOfLines={1}>
+                  Used in {item.count} {(item.count===1)? 'memory':'memories'}
+                </Text> */}
+              </TouchableOpacity>
+            ))}
+          </View>
         </ScrollView>
         <KeyboardAvoidingView
           behavior="padding"
-          keyboardVerticalOffset={28}
+          keyboardVerticalOffset={24}
           contentContainerStyle={styles.mainToolbar}
         >
           <Appbar style={styles.mainToolbarInner}>
@@ -242,10 +279,6 @@ const styles = StyleSheet.create({
     height: 56,
     borderTopWidth: 0,
   },
-  memoryActionbar: {
-    height: 56,
-    borderTopWidth: 0,
-  },
   mainToolbar: {
     position: 'absolute',
     bottom: 0,
@@ -261,5 +294,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.white.light,
-  }
+  },
+  hashtagSuggestions: {
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  hashtagSuggestion: {
+    height: 56,
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderColor: Colors.border,
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+  hashtagSuggestionText: {
+    color: Colors.text.default,
+    fontSize: 16,
+    fontWeight: '400',
+  },
+  hashtagSuggestionTextSmall: {
+    color: Colors.deepGrey.light,
+    fontSize: 12,
+  },
 });
