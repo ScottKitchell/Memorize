@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
   memoryContentText: {
     color: Colors.text.default,
     fontSize: 16,
+    lineHeight: 20,
   },
   actionStrip: {
     backgroundColor: 'transparent',

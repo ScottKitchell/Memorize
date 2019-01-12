@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     textAlignVertical: 'top',
     fontSize: 18,
+    lineHeight: 22,
     color: '#444',
     padding: 20,
     paddingBottom: 10,
