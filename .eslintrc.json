@@ -20,7 +20,7 @@
    "semi": [2, "always", {"omitLastInOneLineBlock": true}],
    "lines-between-class-members": [2, "always", {"exceptAfterSingleLine": true}],
    "block-spacing": 2,
-   "object-curly-spacing": 2,
+   "object-curly-spacing": 0,
    "array-bracket-spacing": 2,
    "space-in-parens": 2,
    "no-console": 1,

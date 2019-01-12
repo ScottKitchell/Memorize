@@ -1,2 +1,2 @@
-export MemoryStore from './memory.store';
-export HashtagStore from './hashtag.store';
+export {default as MemoryStore} from './memory.store';
+export {default as HashtagStore} from './hashtag.store';

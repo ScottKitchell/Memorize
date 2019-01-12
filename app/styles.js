@@ -1,6 +1,6 @@
 //Colors at https://flatuicolors.com/palette/au
 // http://www.0to255.com/
-const rgba = (r, g, b) => (opacity=0.9) => `rgb(${r}, ${g}, ${b}, ${opacity})`;
+const rgba = (r, g, b) => (opacity=0.9) => `rgba(${r}, ${g}, ${b}, ${opacity})`;
 
 const PALETTE = {
   purple: {

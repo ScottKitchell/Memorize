@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, Alert, StyleSheet, AsyncStorage, View, ScrollView, FlatList, Text, TextInput, TouchableOpacity, StatusBar} from 'react-native';
+import { StyleSheet, View, FlatList, TextInput, StatusBar } from 'react-native';
 import _ from 'lodash';
 import MemoryListItem from 'app/components/memory-list-item';
 import { MemoryStore, HashtagStore } from 'app/stores';
@@ -7,33 +7,24 @@ import { Colors } from 'app/styles';
 import { FAB } from 'react-native-paper';
 
 export default class Memories extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      initialMemories: [],
       memories: [],
-      tags: {},
       searchTerm: '',
-    }
+    };
   }
 
   componentDidMount() {
     this.props.navigation.addListener('willFocus', () => {
-      MemoryStore.all().then(memories => {
-        console.log('memories',memories);
-        this.setState({'memories': memories, initialMemories: memories, tags: []});
-        // HashtagStore.all().then((tags) => {
-        //   this.setState({'memories': memories, initialMemories: memories, tags});
-        // });
-      });
+      MemoryStore.all().then(memories => this.setState({ memories }));
     });
     this.props.navigation.navigate('EditMemory');
   }
 
-  toggleFlag = (id) => this.toggle(id,'flag');
+  toggleFlag = (id) => this.toggle(id, 'flag');
 
-  toggleDone = (id) => this.toggle(id,'done');
+  toggleDone = (id) => this.toggle(id, 'done');
 
   toggle = (id, attr) => {
     const memories = _.clone(this.state.memories);
@@ -52,26 +43,29 @@ export default class Memories extends React.Component {
     const memoryRemoval = (id) => {
       const memories = _.reject(this.state.memories, {id});
       MemoryStore.delete(id);
-      this.setState({'memories': memories});
+      this.setState({memories});
     };
-    Alert.alert(
-      'Delete this memory?',
-      memoryText,
-      [
-        {text: 'Cancel', style: 'cancel'},
-        {text: 'Delete', onPress: () => memoryRemoval(id), style: 'destructive'},
-      ],
-      { cancelable: false }
-    );
+    memoryRemoval(id);
+    // Alert.alert(
+    //   'Delete this memory?',
+    //   memoryText,
+    //   [
+    //     {text: 'Cancel', style: 'cancel'},
+    //     {text: 'Delete', onPress: () => memoryRemoval(id), style: 'destructive'},
+    //   ],
+    //   { cancelable: false }
+    // );
   }
 
-  search = _.throttle((searchTerm) => {
-    MemoryStore.search(searchTerm).then(memories => {
-      this.setState({memories});
+  search = (searchTerm) => {
+    this.setState({searchTerm}, () => {
+      MemoryStore.search(searchTerm).then(memories => {
+        this.setState({memories});
+      });
     });
-  }, 600);
+  }
 
-  renderMemory = ({item, index}) => (
+  renderMemory = ({item}) => (
     <MemoryListItem
       id={item.id}
       memory={item}
@@ -79,19 +73,24 @@ export default class Memories extends React.Component {
       onFlagPress={this.toggleFlag}
       onEditPress={this.editMemory}
       onDeletePress={this.deleteMemory}
+      onHashtagPress={(tag)=>this.search(tag)}
     />
   );
 
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor={Colors.header.dark} barStyle="light-content"/>
+        <StatusBar backgroundColor={'#1a1a1a'} barStyle="light-content"/>
         <View style={styles.memoryInput}>
-          <TextInput style={styles.textInput} placeholder="Search Memories" placeholderTextColor="#CCC" multiline={true} underlineColorAndroid="transparent"
-            onChangeText={this.search} />
-        </View>
-        <View>
-
+          <TextInput
+            style={styles.textInput}
+            placeholder="Search Memories"
+            placeholderTextColor="#CCC"
+            multiline={true}
+            underlineColorAndroid="transparent"
+            value={this.state.searchTerm}
+            onChangeText={this.search}
+          />
         </View>
 
         <FlatList
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   memoryInput: {
-    backgroundColor: Colors.header.light,
+    backgroundColor: Colors.white.light,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
     padding: 12,
@@ -137,41 +136,17 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     textAlignVertical: 'top',
     fontSize: 18,
-    color: Colors.text.onDark.default,
+    color: Colors.text.default,
     padding: 6,
     paddingLeft: 10,
     backgroundColor: Colors.overlay.black,
     borderRadius: 3,
   },
-  scrollContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    marginBottom: 64,
-    //padding: 5
-  },
-  newButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    height: 56,
-    width: 56,
-    borderRadius: 28,
-    elevation: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.primary.light,
-  },
-  newButtonText: {
-    fontSize: 22,
-    color: '#FFF'
-  },
   addFAB: {
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: Colors.primary.dark,
-    color: Colors.text.onDark.strong,
-  }
+    backgroundColor: Colors.fab.background,
+    color: Colors.fab.icon,
+  },
 });

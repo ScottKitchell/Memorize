@@ -1,4 +1,4 @@
-import { Platform, AsyncStorage } from 'react-native';
+import {AsyncStorage} from 'react-native';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -29,7 +29,7 @@ export default class AbstractStore {
     try {
       this.log(`Get ${this.name} item with id of ${id}.`);
       const dataArray = (existingDataArray && !this.name) || await this.all();
-      dataItem = _.find(dataArray, {id});
+      const dataItem = _.find(dataArray, {id});
       if(!dataItem)
         throw `No item found with id of ${id}.`;
       return dataItem;
@@ -41,7 +41,7 @@ export default class AbstractStore {
 
   static async save(dataItem) {
     try {
-      this.log(`Save ${this.name} item.`,dataItem);
+      this.log(`Save ${this.name} item.`, dataItem);
       const dataArray = await this.all();
       const res = await this._insert(dataItem, dataArray);
       if(res.dataArray.length < dataArray.length)
@@ -69,7 +69,7 @@ export default class AbstractStore {
       await this.dangerouslyOverrideAll(dataArray);
       return dataArray;
     } catch(error) {
-      console.error(`Error while bulk saving ${this.name} items:`,error);
+      console.error(`Error while bulk saving ${this.name} items:`, error);
       throw error;
     }
   }
@@ -147,7 +147,7 @@ export default class AbstractStore {
     }
   }
 
-  static get idStoreName() { return this.name+'IdCounter'; }
+  static get idStoreName() { return this.name+'IdCounter' }
 
   static log(message, item) {
     if(this.config.logging)

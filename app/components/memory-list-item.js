@@ -1,11 +1,12 @@
 import React from 'react';
-import {Platform, StyleSheet, Text, View, TextInput, TouchableHighlight, TouchableOpacity, TouchableNativeFeedback} from 'react-native';
+import {StyleSheet, ToastAndroid, Text, View, TouchableHighlight, TouchableOpacity, Linking} from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
-import { SocialText } from './generic/social-text';
-import { Icon, ToggleIcon } from './generic/icons';
-import { Colors } from 'app/styles';
+import {SocialText} from './generic/social-text';
+import {Icon, ToggleIcon} from './generic/icons';
+import {Colors} from 'app/styles';
 import moment from 'moment';
+import {Appbar} from 'react-native-paper';
 
 export default class MemoryListItem extends React.Component {
   static propTypes = {
@@ -14,7 +15,13 @@ export default class MemoryListItem extends React.Component {
     onDonePress: PropTypes.func.isRequired,
     onFlagPress: PropTypes.func.isRequired,
     onEditPress: PropTypes.func.isRequired,
-    onDeletePress: PropTypes.func.isRequired
+    onDeletePress: PropTypes.func.isRequired,
+  }
+
+  openUrl = (url) => {
+    Linking.openURL(url).catch(() => (
+      ToastAndroid.showWithGravity(`Could not open URL`, ToastAndroid.SHORT, ToastAndroid.BOTTOM)
+    ));
   }
 
   render() {
@@ -31,41 +38,53 @@ export default class MemoryListItem extends React.Component {
     return (
       <Swipeout
         key={id}
-        style={[styles.container, memory.done? styles.done : {}]}
+        style={styles.container}
         right={rightButtons}
         autoClose={true}
       >
         <TouchableHighlight
           style={styles.main}
           onPress={()=>this.props.onEditPress(id)}
-          underlayColor='#cccccc'
+          underlayColor='#eeeeee'
         >
           <React.Fragment>
             <View style={styles.leftPanel}>
               <CheckCircle
-                checked={memory.done}
-                onChange={() => this.props.onDonePress(id)}
+                checked={false}
+                // onChange={() => this.props.onDonePress(id)}
               />
             </View>
             <View style={styles.centerPanel}>
               <View style={styles.memoryDate}>
                 <Text style={styles.memoryDateText}>
-                  {moment(memory.createdAt,'X').fromNow(true)}
+                  {moment(memory.createdAt, 'X').fromNow()}
                 </Text>
               </View>
               <View style={styles.memoryContent}>
                 <SocialText
-                  style={styles.memoryContentText}
+                  style={[styles.memoryContentText, memory.done && {opacity: 0.3}]}
                   hashtagStyle={{color: Colors.primary.dark}}
                   urlStyle={{color: Colors.primary.dark}}
-                  onHashtagPress={(tag)=>console.log('pressed',tag)}
+                  onHashtagPress={this.props.onHashtagPress}
+                  onUrlPress={this.openUrl}
                   >
                   {memory.text}
                 </SocialText>
               </View>
-              <View style={styles.actionStrip}>
-
-              </View>
+              <Appbar style={styles.actionStrip}>
+                <Appbar.Action
+                  icon="check"
+                  onPress={()=>this.props.onDonePress(memory.id)}
+                  size={22}
+                  color={memory.done? Colors.primary.light : Colors.lightGrey.dark}
+                />
+                <Appbar.Action
+                  icon="flag"
+                  size={22}
+                  onPress={()=>this.props.onFlagPress(memory.id)}
+                  color={memory.flag? Colors.primary.light : Colors.lightGrey.dark}
+                />
+              </Appbar>
             </View>
           </React.Fragment>
         </TouchableHighlight>
@@ -82,7 +101,7 @@ const CheckCircle = (props) => (
   >
     <Text></Text>
   </TouchableOpacity>
-)
+);
 
 
 const styles = StyleSheet.create({
@@ -92,13 +111,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#EEE',
     flexDirection: 'column',
   },
-  done: {
-    backgroundColor: '#fbfbfb',
-  },
   main: {
     flexDirection: 'row',
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 8,
     paddingLeft: 16,
     paddingRight: 16,
   },
@@ -112,7 +128,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
   },
   checkedCircle: {
-    backgroundColor: '#e056fd',
+    backgroundColor: Colors.primary.light,
   },
   centerPanel: {
     flex: 1,
@@ -126,7 +142,7 @@ const styles = StyleSheet.create({
   },
   memoryDateText: {
     fontSize: 10,
-    color: '#cccccc'
+    color: '#cccccc',
   },
   memoryContent: {
     alignItems: 'flex-start',
@@ -136,6 +152,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   actionStrip: {
-
+    backgroundColor: 'transparent',
+    height: 36,
   },
 });

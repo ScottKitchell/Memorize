@@ -1,6 +1,7 @@
 import AbstractStore from './base.store';
 import _ from 'lodash';
 
+
 export default class HashtagStore extends AbstractStore {
   static config = {
     timestamps: true,
@@ -10,14 +11,14 @@ export default class HashtagStore extends AbstractStore {
   }
 
   static async search(tag, limit=8) {
-    const regex = RegExp(`^${tag}`,'i');
+    const regex = RegExp(`^${tag}`, 'i');
     const predicate = (hashtag) => hashtag.tag.match(regex);
     const hashtags = (tag !== "")? await this.filter(predicate) : await this.all();
     return hashtags.slice(0, limit);
   }
 
   static async bulkAdd(tags, existingHashtagArray=undefined) {
-    this.log(`Bulk add tags.`,tags);
+    this.log(`Bulk add tags.`, tags);
     if(!Array.isArray(tags)) return;
     const hashtagArray = existingHashtagArray || await this.all();
     const hashtags = _.keyBy(hashtagArray, 'tag');
@@ -33,7 +34,7 @@ export default class HashtagStore extends AbstractStore {
   }
 
   static async bulkSubtract(tags, existingDataArray=undefined) {
-    this.log(`Bulk subtract tags.`,tags);
+    this.log(`Bulk subtract tags.`, tags);
     const hashtagArray = existingDataArray || await this.all();
     const hashtags = _.keyBy(hashtagArray, 'tag');
     const updatedHashtags = tags.map((tag) => {
@@ -46,5 +47,4 @@ export default class HashtagStore extends AbstractStore {
     });
     return this.bulkSave(updatedHashtags);
   }
-
 }
