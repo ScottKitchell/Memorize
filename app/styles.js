@@ -1,11 +1,15 @@
 //Colors at https://flatuicolors.com/palette/au
 // http://www.0to255.com/
-const rgba = (r, g, b) => (opacity=0.9) => `rgba(${r}, ${g}, ${b}, ${opacity})`;
+const rgba = (r, g, b) => (opacity=0.9) => `rgb(${r}, ${g}, ${b}, ${opacity})`;
 
 const PALETTE = {
   purple: {
-    light: '#e056fd',
-    dark: '#be2edd',
+    light: '#DC6BFF',
+    dark: '#C448EA',
+  },
+  turquorise: {
+    light: '#3BE2BE',
+    dark: '#35BA9D',
   },
   blueGreen: {
     light: '#7ed6df',
@@ -46,30 +50,28 @@ const PALETTE = {
   white: {
     light: '#ffffff',
     dark: '#f0f0f0',
-    _transparent: rgba(255,255,255),
+    _transparent: rgba(255, 255, 255),
   },
   black: {
     light: '#0f0f0f',
     dark: '#000000',
-    _transparent: rgba(0,0,0),
-  }
+    _transparent: rgba(0, 0, 0),
+  },
 };
 
 export const Colors = {
   ...PALETTE,
   text: {
-    soft: PALETTE.black._transparent(0.68),
+    soft: PALETTE.black._transparent(0.6),
     default: PALETTE.black._transparent(0.75),
-    strong: PALETTE.black._transparent(0.88),
-    solid: PALETTE.black.dark,
+    strong: PALETTE.black._transparent(0.9),
     onDark: {
-      soft: PALETTE.white._transparent(0.68),
+      soft: PALETTE.white._transparent(0.6),
       default: PALETTE.white._transparent(0.75),
-      strong: PALETTE.white._transparent(0.88),
-      solid: PALETTE.white.light,
-    }
+      strong: PALETTE.white._transparent(0.9),
+    },
   },
-  primary: PALETTE.purple,
+  primary: PALETTE.turquorise,
   background: PALETTE.white.light,
   border: PALETTE.lightGrey.light,
   overlay: {
@@ -80,8 +82,12 @@ export const Colors = {
     light: PALETTE.white.light,
   },
   tabBar: {
-    activeIcon: PALETTE.purple.dark,
+    activeIcon: PALETTE.turquorise.light,
     inactiveIcon: PALETTE.lightGrey.dark,
     background: PALETTE.white.light,
-  }
+  },
+  fab: {
+    background: PALETTE.turquorise.light,
+    icon: PALETTE.white._transparent(0.75),
+  },
 };
