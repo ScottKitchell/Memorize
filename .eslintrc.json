@@ -29,7 +29,7 @@
    "react/no-unused-prop-types": 1,
    "react/no-unused-state": 1,
    "react/prefer-stateless-function": 2,
-   "react-native/no-unused-styles": 2
+   "react-native/no-unused-styles": 1
   },
   "plugins": [
     "react",
