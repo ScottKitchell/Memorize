@@ -1,20 +1,38 @@
 import AbstractStore from './base.store';
 import HashtagStore from './hashtag.store';
 import _ from 'lodash';
-
+import { Platform, AsyncStorage } from 'react-native';
 
 export default class MemoryStore extends AbstractStore {
+  static config = {
+    timestamps: true,
+    sortBy: (dataItem) => (-1 * dataItem.id),
+  }
+
+  // static async sort() {
+  //   const unsorted = await this.all();
+  //   const sorted = _.sortBy(unsorted, (item)=>-1*item.createdAt);
+  //   console.warn('length',sorted.length);
+  //   newSorted = sorted.map((item,i)=>{
+  //     item.id = i;
+  //     return item;
+  //   });
+  //   AsyncStorage.setItem('MemoryStoreIdCounter', "12");
+  //   if(newSorted.length===12)
+  //     this.dangerouslyOverrideAll(newSorted);
+  // }
 
   static async search(phrase) {
-    const regex = RegExp(_.words(phrase).join('|'),'g');
+    const regex = RegExp(phrase.split(" ").join('|'),'gi');
     const predicate = (memory) => {
       // memory.matches is the negative of how many times the substring is found
       // which is used for the sortBy below. Negative is used to sort desc.
-      memory.matches = -1*(regex.exec(memory.text) || []).length;
-      return (memory.matches < 0);
+      memory.matches = (memory.text.match(regex) || []).length;
+      return (memory.matches > 0);
     }
     const memories = await this.filter(predicate);
-    return _.sortBy(memories, 'matches');
+    console.log(memories);
+    return _.sortBy(memories, (memory) => (-1 * memory.matches));
   };
 
   static async save(memory) {
