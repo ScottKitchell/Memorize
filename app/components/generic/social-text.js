@@ -104,16 +104,23 @@ export function SocialText(props) {
     return (domain.lengh <= 28) ? domain : domain.slice(0, 24) + "...";
   };
   const {onHashtagPress, onUrlPress, hashtagStyle, urlStyle, ...containerProps} = props;
-  const richText = props.children.split(" ").reduce((textArray, word, i) => {
+
+  const parseLine = (lineText) => lineText.split(" ").reduce((textArray, word, index) => {
     const richWord = (word[0] === "#")
-      ? <Text onPress={() => onHashtagPress(word)} key={i} style={hashtagStyle}>{word}</Text>
+      ? <Text onPress={() => onHashtagPress(word)} key={index} style={hashtagStyle}>{word}</Text>
       : (word.match(URL_REGEX))
-        ? <Text onPress={() => onUrlPress(word)} key={i} style={urlStyle}>
+        ? <Text onPress={() => onUrlPress(word)} key={index} style={urlStyle}>
           {props.shortUrl ? shortenUrl(word): word}
         </Text>
         : word;
-    return textArray.concat((i)? [' ', richWord] : [richWord]);
+    return textArray.concat((index)? [' ', richWord] : [richWord]);
   }, []);
+
+  const richText = props.children.split('\n').reduce((textArray, line, lineIndex) => {
+    const nextLine = parseLine(line);
+    return textArray.concat((lineIndex)? ['\n', nextLine] : [nextLine]);
+  }, []);
+
   return <Text {...containerProps}>{richText}</Text>;
 }
 
