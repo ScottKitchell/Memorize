@@ -7,7 +7,7 @@ const PALETTE = {
     light: '#DC6BFF',
     dark: '#C448EA',
   },
-  turquorise: {
+  turquoise: {
     light: '#3BE2BE',
     dark: '#35BA9D',
   },
@@ -71,7 +71,7 @@ export const Colors = {
       strong: PALETTE.white._transparent(0.9),
     },
   },
-  primary: PALETTE.turquorise,
+  primary: PALETTE.turquoise,
   background: PALETTE.white.light,
   border: PALETTE.lightGrey.light,
   overlay: {
@@ -82,12 +82,13 @@ export const Colors = {
     light: PALETTE.white.light,
   },
   tabBar: {
-    activeIcon: PALETTE.turquorise.light,
+    activeIcon: PALETTE.turquoise.light,
     inactiveIcon: PALETTE.lightGrey.dark,
     background: PALETTE.white.light,
   },
+  statusBar: PALETTE.turquoise.dark,
   fab: {
-    background: PALETTE.turquorise.light,
+    background: PALETTE.turquoise.light,
     icon: PALETTE.white._transparent(0.75),
   },
 };
