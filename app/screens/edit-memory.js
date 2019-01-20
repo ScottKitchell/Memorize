@@ -1,5 +1,5 @@
 import React from 'react';
-import {ToastAndroid, StyleSheet, Text, View, ScrollView, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+import {ToastAndroid, StyleSheet, Text, View, ScrollView, TouchableOpacity, KeyboardAvoidingView, StatusBar} from 'react-native';
 import {SocialTextInput} from 'app/components/generic/social-text';
 import {Appbar} from 'react-native-paper';
 import {FontAwesomeIcon} from 'app/components/generic/icons';
@@ -78,7 +78,7 @@ export default class EditMemoryScreen extends React.Component {
     if(typeof tag !== 'string')
       this.setState({hashtagSuggestions:[]});
     HashtagStore.search(tag).then((hashtagSuggestions) => {
-      console.log(`searchHashtags - "${tag}" found ${hashtagSuggestions.length} results`);
+      // console.log(`searchHashtags - "${tag}" found ${hashtagSuggestions.length} results`);
       this.setState({hashtagSuggestions});
     });
   }
@@ -120,8 +120,8 @@ export default class EditMemoryScreen extends React.Component {
   closeScreen = () => this.props.navigation.goBack();
 
   render() {
-    if(this.state.hashtagSuggestions.length > 0)
-      console.log(`hashtagSuggestions -`, this.state.hashtagSuggestions);
+    // if(this.state.hashtagSuggestions.length > 0)
+      // console.log(`hashtagSuggestions -`, this.state.hashtagSuggestions);
     return (
       <View style={styles.container}>
         <HeaderAppbar
@@ -212,7 +212,7 @@ export default class EditMemoryScreen extends React.Component {
 function HeaderAppbar(props) {
   return (
     <Appbar.Header style={styles.appbarHeader}>
-      <Appbar.BackAction onPress={props.onBackPress} />
+      <Appbar.Action icon="close" onPress={props.onBackPress} />
       <Appbar.Content
         title={props.title}
       />

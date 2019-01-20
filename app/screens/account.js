@@ -1,8 +1,8 @@
 import React from 'react';
-import { Platform, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button } from 'react-native';
+import { Platform, StyleSheet, AsyncStorage, Text, View, ScrollView, TextInput, TouchableOpacity, Button, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { MemoryStore } from 'app/stores';
-
+import { Colors } from 'app/styles';
 
 export default class AccountScreen extends React.Component {
 
@@ -10,7 +10,7 @@ export default class AccountScreen extends React.Component {
     super(props);
     this.state = {
       memoryArray: [],
-    }
+    };
   }
 
   componentDidMount() {
@@ -48,8 +48,10 @@ export default class AccountScreen extends React.Component {
     // );
     return (
       <View style={styles.container}>
-        <Text><Icon name='user'/> Reflection</Text>
-        <Button title="Delete all memories" onPress={()=>MemoryStore.destroy()}/>
+        <StatusBar backgroundColor={Colors.statusBar} barStyle="light-content"/>
+        <Text><Icon name='user'/> Morning Brief</Text>
+        <Text><Icon name='user'/> Nightly Review</Text>
+        {/* <Button title="Delete all memories" onPress={()=>MemoryStore.destroy()}/> */}
       </View>
     );
   }

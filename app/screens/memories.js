@@ -1,25 +1,34 @@
 import React from 'react';
 import { StyleSheet, View, FlatList, TextInput, StatusBar } from 'react-native';
 import _ from 'lodash';
-import MemoryListItem from 'app/components/memory-list-item';
+import MemoryListItem from 'app/components/memory';
 import { MemoryStore, HashtagStore } from 'app/stores';
 import { Colors } from 'app/styles';
-import { FAB } from 'react-native-paper';
+import { FAB, Appbar } from 'react-native-paper';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
-export default class Memories extends React.Component {
+export default class MemoriesScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       memories: [],
       searchTerm: '',
+      flagsOnly: false,
     };
   }
 
   componentDidMount() {
     this.props.navigation.addListener('willFocus', () => {
-      MemoryStore.all().then(memories => this.setState({ memories }));
+      this.updateMemories();
     });
     this.props.navigation.navigate('EditMemory');
+  }
+
+  updateMemories = (flagsOnly = this.state.flagsOnly) => {
+    if (flagsOnly)
+      MemoryStore.filter('flag').then(memories => this.setState({ memories }));
+    else 
+      MemoryStore.all().then(memories => this.setState({ memories }));
   }
 
   toggleFlag = (id) => this.toggle(id, 'flag');
@@ -57,12 +66,14 @@ export default class Memories extends React.Component {
     // );
   }
 
-  search = (searchTerm) => {
-    this.setState({searchTerm}, () => {
-      MemoryStore.search(searchTerm).then(memories => {
-        this.setState({memories});
-      });
-    });
+  search = (search) => {
+    this.props.navigation.navigate('Search', {search});
+  }
+
+  handleFlagsFilterPress = () => { 
+    const flagsOnly = !this.state.flagsOnly;
+    this.updateMemories(flagsOnly);
+    this.setState({flagsOnly});
   }
 
   renderMemory = ({item}) => (
@@ -80,18 +91,19 @@ export default class Memories extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor={'#1a1a1a'} barStyle="light-content"/>
-        <View style={styles.memoryInput}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Search Memories"
-            placeholderTextColor="#CCC"
-            multiline={true}
-            underlineColorAndroid="transparent"
-            value={this.state.searchTerm}
-            onChangeText={this.search}
+        <StatusBar backgroundColor={Colors.statusBar} barStyle="light-content"/>
+        <Appbar.Header style={styles.header}>
+          <Appbar.Content
+            title="Memories"
           />
-        </View>
+          <Appbar.Action 
+            icon={({size, color})=>(
+              <FeatherIcon name="flag" size={size} color={color}/>
+            )}
+            onPress={this.handleFlagsFilterPress} 
+            color={this.state.flagsOnly? Colors.primary.light : Colors.lightGrey.dark}
+          />
+        </Appbar.Header>
 
         <FlatList
           style={styles.body}
@@ -125,6 +137,12 @@ function AddFAB(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    backgroundColor: Colors.header.light,
+    elevation: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
   },
   memoryInput: {
     backgroundColor: Colors.white.light,

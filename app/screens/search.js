@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, FlatList, TextInput, StatusBar } from 'react-native';
 import _ from 'lodash';
-import MemoryListItem from 'app/components/memory-list-item';
+import MemoryListItem from 'app/components/memory';
 import { MemoryStore, HashtagStore } from 'app/stores';
 import { Colors } from 'app/styles';
-import { FAB } from 'react-native-paper';
+import { FAB, Searchbar, Appbar } from 'react-native-paper';
 
-export default class Memories extends React.Component {
+export default class SearchScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,9 +17,11 @@ export default class Memories extends React.Component {
 
   componentDidMount() {
     this.props.navigation.addListener('willFocus', () => {
-      MemoryStore.filter('flag').then(memories => this.setState({ memories }));
+      this.search(this.getSearchTermFromRoute());
     });
   }
+
+  getSearchTermFromRoute = () => this.props.navigation.getParam('search', '');
 
   toggleFlag = (id) => this.toggle(id, 'flag');
 
@@ -57,9 +59,9 @@ export default class Memories extends React.Component {
   }
 
   search = (searchTerm) => {
-    this.setState({ searchTerm }, () => {
+    this.setState({searchTerm}, () => {
       MemoryStore.search(searchTerm).then(memories => {
-        this.setState({ memories });
+        this.setState({memories});
       });
     });
   }
@@ -79,16 +81,16 @@ export default class Memories extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor={'#1a1a1a'} barStyle="light-content" />
+        <StatusBar backgroundColor={Colors.statusBar} barStyle="light-content"/>
         <View style={styles.memoryInput}>
           <TextInput
-            style={styles.textInput}
-            placeholder="Search Memories"
-            placeholderTextColor="#CCC"
-            multiline={true}
-            underlineColorAndroid="transparent"
             value={this.state.searchTerm}
+            placeholder="Search"
+            autoFocus={(!this.state.searchTerm)}
             onChangeText={this.search}
+            style={styles.searchInput}
+            placeholderTextColor="#CCC"
+            underlineColorAndroid="transparent"
           />
         </View>
 
@@ -129,15 +131,22 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white.light,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
-    padding: 12,
+    height: 56,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    elevation: 0,
+    paddingLeft: 16,
+    paddingRight: 16,
   },
-  textInput: {
-    alignSelf: 'stretch',
-    textAlignVertical: 'top',
+  searchInput: {
+    flex: 1,
+    height: 36,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingBottom: 6,
     fontSize: 18,
     color: Colors.text.default,
-    padding: 6,
-    paddingLeft: 10,
     backgroundColor: Colors.overlay.black,
     borderRadius: 3,
   },

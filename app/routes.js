@@ -4,16 +4,17 @@ import { createBottomTabNavigator, createStackNavigator, createAppContainer } fr
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { Icon } from './components/generic/icons';
 import MemoriesScreen from './screens/memories';
-import FlaggedMemoriesScreen from './screens/flagged-memories';
-import AccountScreen from './screens/user';
+import SearchScreen from './screens/search';
+import AccountScreen from './screens/account';
 import EditMemoryScreen from './screens/edit-memory';
 import { Colors } from './styles';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 export const ROUTES = {
   TABS: {
     toString: ()=>'Tabs',
-    MEMORIES: 'MemoriesScreen',
-    FLAGS: 'Flags',
+    MEMORIES: 'Memories',
+    SEARCH: 'Search',
     ACCOUNT: 'Account',
   },
   EDIT_MEMORY: {
@@ -52,42 +53,51 @@ export const ROUTES = {
 //   },
 // });
 
+// const tabBarIcon = (iconName) => ({ tintColor, focused }) => (
+//   <Icon name={`${iconName}${focused? '' : '-outline'}`} size={26} color={tintColor} />
+// )
+
 const tabBarIcon = (iconName) => ({ tintColor, focused }) => (
-  <Icon name={`${iconName}${focused? '' : '-outline'}`} size={26} color={tintColor} />
-)
+  <FeatherIcon name={iconName} size={26} color={tintColor} />
+);
 
 const TabNavigator = createMaterialBottomTabNavigator({
   [ROUTES.TABS.MEMORIES]:  {
     screen: MemoriesScreen,
     navigationOptions: {
-        // title: I18n.t('homeTitle'),
-        // tabBarLabel: I18n.t('homeTabTitle'),
-        // tabBarColor: Colors.primary,
-        tabBarIcon: tabBarIcon('feature-search'),
-      }
+      // title: 'Home',
+      // tabBarLabel: I18n.t('homeTabTitle'),
+      // tabBarColor: Colors.primary,
+      tabBarIcon: tabBarIcon('home'),
+    },
   },
-  [ROUTES.TABS.FLAGS]: {
-    screen: FlaggedMemoriesScreen,
+  [ROUTES.TABS.SEARCH]:  {
+    screen: SearchScreen,
     navigationOptions: {
-      tabBarIcon: tabBarIcon('flag'),
+      // title: 'Search',
+      // tabBarLabel: I18n.t('homeTabTitle'),
+      // tabBarColor: Colors.primary,
+      tabBarIcon: tabBarIcon('search'),
     },
   },
   [ROUTES.TABS.ACCOUNT]: {
     screen: AccountScreen,
     navigationOptions: {
-      tabBarIcon: tabBarIcon('account'),
+      // title: 'Account',
+      tabBarIcon: tabBarIcon('user'),
     },
   },
 },
 {
-  shifting: true,
+  shifting: false,
   labeled: false,
   activeColor: Colors.tabBar.activeIcon,
   inactiveColor: Colors.tabBar.inactiveIcon,
   barStyle: {
     height: 56,
-    backgroundColor: Colors.tabBar.background
+    backgroundColor: Colors.tabBar.background,
   },
+  // initialRouteName: ROUTES.TABS.SEARCH,
 });
 
 export const AppNavStack = createStackNavigator({
@@ -95,19 +105,19 @@ export const AppNavStack = createStackNavigator({
     screen: TabNavigator,
     navigationOptions: {
       header: null,
-    }
+    },
   },
   [ROUTES.EDIT_MEMORY]: {
     screen: EditMemoryScreen,
     navigationOptions: {
       title: 'Edit Memory',
       header: null,
-    }
+    },
   },
 },
 {
   navigationOptions: {
     header: null,
     animationEnabled: false,
-  }
+  },
 });
