@@ -1,26 +1,25 @@
-import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import { createBottomTabNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
-import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { Icon } from './components/generic/icons';
-import MemoriesScreen from './screens/memories';
-import SearchScreen from './screens/search';
-import SearchResultsScreen from './screens/search-results';
-import AccountScreen from './screens/account';
-import EditMemoryScreen from './screens/edit-memory';
-import { Colors } from './styles';
-import FeatherIcon from 'react-native-vector-icons/Feather';
+import React from 'react'
+import { createBottomTabNavigator, createStackNavigator } from 'react-navigation'
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
+import MemoriesScreen from './screens/memories'
+import SearchScreen from './screens/search'
+import SearchResultsScreen from './screens/search-results'
+import AccountScreen from './screens/account'
+import EditMemoryScreen from './screens/edit-memory'
+import { Colors } from './styles'
+// import { Icon } from './components/generic/icons'
+import FeatherIcon from 'react-native-vector-icons/Feather'
 
 export const ROUTES = {
   TABS: {
-    toString: ()=>'Tabs',
+    toString: () => 'Tabs',
     MEMORIES: 'Memories',
     SEARCH: 'Search',
     ACCOUNT: 'Account',
   },
   EDIT_MEMORY: 'EditMemory',
   SEARCH_RESULTS: 'SearchResults',
-};
+}
 
 // const TabNavigator = createBottomTabNavigator({
 //   [ROUTES.TABS.MEMORIES]:  MemoriesScreen,
@@ -59,7 +58,7 @@ export const ROUTES = {
 
 const tabBarIcon = (iconName) => ({ tintColor }) => (
   <FeatherIcon name={iconName} size={26} color={tintColor} />
-);
+)
 
 
 const TabNavigator = createMaterialBottomTabNavigator({
@@ -95,7 +94,7 @@ const TabNavigator = createMaterialBottomTabNavigator({
     backgroundColor: Colors.tabBar.background,
   },
   // initialRouteName: ROUTES.TABS.SEARCH,
-});
+})
 
 export const AppNavStack = createStackNavigator({
   [ROUTES.TABS]: {
@@ -124,4 +123,4 @@ export const AppNavStack = createStackNavigator({
     header: null,
     animationEnabled: true,
   },
-});
+})

@@ -1,12 +1,12 @@
-import React from 'react';
-import { StyleSheet, ToastAndroid, Text, View, TouchableHighlight, TouchableOpacity, Linking} from 'react-native';
-import PropTypes from 'prop-types';
-import Swipeout from 'react-native-swipeout';
-import { SocialText } from 'app/components/generic/social-text';
-import { Icon, ToggleIcon } from 'app/components/generic/icons';
-import { Colors } from 'app/styles';
-import moment from 'moment';
-import { Appbar } from 'react-native-paper';
+import React from 'react'
+import { StyleSheet, ToastAndroid, Text, View, TouchableHighlight, TouchableOpacity, Linking } from 'react-native'
+import PropTypes from 'prop-types'
+import Swipeout from 'react-native-swipeout'
+import { SocialText } from 'app/components/generic/social-text'
+import { Icon, ToggleIcon } from 'app/components/generic/icons'
+import { Colors } from 'app/styles'
+import moment from 'moment'
+import { Appbar } from 'react-native-paper'
 
 export default class MemoryListItem extends React.Component {
   static propTypes = {
@@ -21,19 +21,19 @@ export default class MemoryListItem extends React.Component {
   openUrl = (url) => {
     Linking.openURL(url).catch(() => (
       ToastAndroid.showWithGravity(`Could not open URL`, ToastAndroid.SHORT, ToastAndroid.BOTTOM)
-    ));
+    ))
   }
 
   render() {
-    const id = this.props.id;
-    const memory = this.props.memory;
+    const id = this.props.id
+    const memory = this.props.memory
 
     const rightButtons = [{
       text: 'Delete',
       type: 'delete',
       backgroundColor: Colors.red.light,
       onPress: () => this.props.onDeletePress(id, memory.text),
-    }];
+    }]
 
     return (
       <Swipeout
@@ -44,7 +44,7 @@ export default class MemoryListItem extends React.Component {
       >
         <TouchableHighlight
           style={styles.main}
-          onPress={()=>this.props.onEditPress(id)}
+          onPress={() => this.props.onEditPress(id)}
           underlayColor='#eeeeee'
         >
           <React.Fragment>
@@ -62,9 +62,9 @@ export default class MemoryListItem extends React.Component {
               </View>
               <View style={styles.memoryContent}>
                 <SocialText
-                  style={[styles.memoryContentText, memory.done && {opacity: 0.3}]}
-                  hashtagStyle={{color: Colors.primary.dark}}
-                  urlStyle={{color: Colors.primary.dark}}
+                  style={[styles.memoryContentText, memory.done && { opacity: 0.3 }]}
+                  hashtagStyle={{ color: Colors.primary.dark }}
+                  urlStyle={{ color: Colors.primary.dark }}
                   onHashtagPress={this.props.onHashtagPress}
                   onUrlPress={this.openUrl}
                   >
@@ -74,22 +74,22 @@ export default class MemoryListItem extends React.Component {
               <Appbar style={styles.actionStrip}>
                 <Appbar.Action
                   icon="check"
-                  onPress={()=>this.props.onDonePress(memory.id)}
+                  onPress={() => this.props.onDonePress(memory.id)}
                   size={22}
-                  color={memory.done? Colors.primary.light : Colors.lightGrey.dark}
+                  color={memory.done ? Colors.primary.light : Colors.lightGrey.dark}
                 />
                 <Appbar.Action
                   icon="flag"
                   size={22}
-                  onPress={()=>this.props.onFlagPress(memory.id)}
-                  color={memory.flag? Colors.primary.light : Colors.lightGrey.dark}
+                  onPress={() => this.props.onFlagPress(memory.id)}
+                  color={memory.flag ? Colors.primary.light : Colors.lightGrey.dark}
                 />
               </Appbar>
             </View>
           </React.Fragment>
         </TouchableHighlight>
       </Swipeout>
-    );
+    )
   }
 }
 
@@ -101,7 +101,7 @@ const CheckCircle = (props) => (
   >
     <Text></Text>
   </TouchableOpacity>
-);
+)
 
 
 const styles = StyleSheet.create({
@@ -156,4 +156,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     height: 36,
   },
-});
+})

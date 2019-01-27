@@ -1,6 +1,4 @@
-//Colors at https://flatuicolors.com/palette/au
-// http://www.0to255.com/
-const rgba = (r, g, b) => (opacity=0.9) => `rgba(${r}, ${g}, ${b}, ${opacity})`;
+const rgba = (r, g, b) => (opacity = 0.9) => `rgba(${r}, ${g}, ${b}, ${opacity})` // eslint-disable-line id-length
 
 const PALETTE = {
   purple: {
@@ -57,7 +55,7 @@ const PALETTE = {
     dark: '#000000',
     _transparent: rgba(0, 0, 0),
   },
-};
+}
 
 export const Colors = {
   ...PALETTE,
@@ -91,4 +89,4 @@ export const Colors = {
     background: PALETTE.turquoise.light,
     icon: PALETTE.white._transparent(0.75),
   },
-};
+}

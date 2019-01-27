@@ -1,14 +1,15 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { Icon, ToggleIcon } from './icons';
-import { Colors } from 'app/styles';
-import PropTypes from 'prop-types';
+import React from 'react'
+import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
+import { Icon, ToggleIcon } from './icons'
+import { Colors } from 'app/styles'
+import PropTypes from 'prop-types'
 
 export default class Toolbar extends React.Component {
   static propTypes = {
     keyboardAvoiding: PropTypes.bool,
     // style,
   }
+
   static defaultProps = {
     keyboardAvoiding: false,
   }
@@ -23,19 +24,19 @@ export default class Toolbar extends React.Component {
       >
         {this.props.children}
       </KeyboardAvoidingView>
-    );
+    )
   }
 
   // Sub components
-  static Action = Action;
-  static Button = Button;
+  static Action = Action
+  static Button = Button
 }
 
 export function Action(props) {
   return (
     <TouchableOpacity
       style={[styles.button, props.style]}
-      onPress={()=>{props.onPress(); console.log('press')}}
+      onPress={() => { props.onPress(); console.log('press') }}
       disabled={props.disabled}
     >
       {props.icon && (
@@ -114,4 +115,4 @@ const styles = StyleSheet.create({
     margin: 4,
     padding: 8,
   },
-});
+})

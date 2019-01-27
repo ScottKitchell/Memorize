@@ -1,11 +1,9 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { Icon, ToggleIcon } from './generic/icons';
+import React from 'react'
+import { StyleSheet, View, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
+import { Icon } from './generic/icons'
 
 
-
-export function EditMemoryToolbar(props) {
-  const ContainerComponent = props.keyboardAvoiding?
+export function EditMemoryToolbar2(props) {
   return (
     <KeyboardAvoidingView
       behavior="position"
@@ -15,13 +13,13 @@ export function EditMemoryToolbar(props) {
     >
       <View>
         <TouchableOpacity style={styles.item} onPress={props.toggleFlag} >
-          <Icon name="flag" size={24} style={props.flag? styles.selected : {}}/>
+          <Icon name="flag" size={24} style={props.flag ? styles.selected : {}}/>
         </TouchableOpacity>
       </View>
 
       <View>
         <TouchableOpacity style={styles.item} onPress={props.toggleDone} >
-          <Icon name="check" size={24} style={props.done? styles.selected : {}}/>
+          <Icon name="check" size={24} style={props.done ? styles.selected : {}}/>
         </TouchableOpacity>
       </View>
 
@@ -32,51 +30,9 @@ export function EditMemoryToolbar(props) {
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
-  );
+  )
 }
 
-function export KeyboardAvoidingToolbar(props) {
-  <KeyboardAvoidingView
-    behavior="position"
-    keyboardVerticalOffset={28}
-    contentContainerStyle={styles.toolbar}
-    keyboardShouldPersistTaps="always"
-  >
-
-  </KeyboardAvoidingView>
-}
-
-
-export function EditMemoryToolbar(props) {
-
-  return (
-    <KeyboardAvoidingView
-      behavior="position"
-      keyboardVerticalOffset={28}
-      contentContainerStyle={styles.toolbar}
-      keyboardShouldPersistTaps="always"
-    >
-      <View>
-        <TouchableOpacity style={styles.item} onPress={props.toggleFlag} >
-          <Icon name="flag" size={24} style={props.flag? styles.selected : {}}/>
-        </TouchableOpacity>
-      </View>
-
-      <View>
-        <TouchableOpacity style={styles.item} onPress={props.toggleDone} >
-          <Icon name="check" size={24} style={props.done? styles.selected : {}}/>
-        </TouchableOpacity>
-      </View>
-
-      <View>
-        <TouchableOpacity style={styles.item} onPress={props.save} >
-          <Text style={styles.itemText}>Done</Text>
-          {/* <Icon name="save" size={24} color='#BA2BF7'/> */}
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
-  );
-}
 
 const styles = StyleSheet.create({
   toolbar: {
@@ -104,9 +60,4 @@ const styles = StyleSheet.create({
   selected: {
     color: '#DA22FF',
   },
-  title: {
-    padding: 8,
-    alignSelf: 'center',
-    fontSize: 18,
-  }
-});
+})
