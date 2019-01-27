@@ -1,34 +1,43 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, TextInput, StatusBar } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { FlatList } from 'react-navigation';
 import _ from 'lodash';
+import Screen from 'app/components/screen';
 import MemoryListItem from 'app/components/memory';
-import { MemoryStore, HashtagStore } from 'app/stores';
+import FloatingAddButton from 'app/components/add-new-button';
+import { MemoryStore } from 'app/stores';
 import { Colors } from 'app/styles';
-import { FAB, Appbar } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+
 
 export default class MemoriesScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       memories: [],
-      searchTerm: '',
       flagsOnly: false,
     };
+    this._memoriesList = React.createRef();
   }
 
   componentDidMount() {
-    this.props.navigation.addListener('willFocus', () => {
-      this.updateMemories();
-    });
+    this._screenFocusListener = this.props.navigation.addListener('didFocus', this.updateMemories);
     this.props.navigation.navigate('EditMemory');
   }
 
-  updateMemories = (flagsOnly = this.state.flagsOnly) => {
-    if (flagsOnly)
-      MemoryStore.filter('flag').then(memories => this.setState({ memories }));
-    else 
-      MemoryStore.all().then(memories => this.setState({ memories }));
+  componentWillUnmount() {
+    this._screenFocusListener.remove();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.flagsOnly !== prevState.flagsOnly)
+      this.updateMemories();
+  }
+
+  updateMemories = () => {
+    (this.state.flagsOnly? MemoryStore.filter('flag') : MemoryStore.all())
+    .then(memories => this.setState({ memories }));
   }
 
   toggleFlag = (id) => this.toggle(id, 'flag');
@@ -39,42 +48,27 @@ export default class MemoriesScreen extends React.Component {
     const memories = _.clone(this.state.memories);
     const memory = _.find(memories, {id});
     memory[attr] = !memory[attr];
-    MemoryStore.save(memory).then(() => {
-      this.setState({memories});
-    });
+    this.setState({ memories }, () => MemoryStore.save(memory));
   }
 
   editMemory = (id) => {
     this.props.navigation.navigate('EditMemory', {id});
   }
 
-  deleteMemory = (id, memoryText) => {
-    const memoryRemoval = (id) => {
-      const memories = _.reject(this.state.memories, {id});
-      MemoryStore.delete(id);
-      this.setState({memories});
-    };
-    memoryRemoval(id);
-    // Alert.alert(
-    //   'Delete this memory?',
-    //   memoryText,
-    //   [
-    //     {text: 'Cancel', style: 'cancel'},
-    //     {text: 'Delete', onPress: () => memoryRemoval(id), style: 'destructive'},
-    //   ],
-    //   { cancelable: false }
-    // );
+  deleteMemory = (id) => {
+    const memories = _.reject(this.state.memories, {id});
+    this.setState({ memories }, () => MemoryStore.delete(id));
   }
 
   search = (search) => {
-    this.props.navigation.navigate('Search', {search});
+    this.props.navigation.navigate('SearchResults', {search});
   }
 
-  handleFlagsFilterPress = () => { 
-    const flagsOnly = !this.state.flagsOnly;
-    this.updateMemories(flagsOnly);
-    this.setState({flagsOnly});
+  handleFlagsFilterPress = () => {
+    this.setState({flagsOnly: !this.state.flagsOnly});
   }
+
+  scrollToTop = () => this._memoriesList.current.scrollToIndex(0);
 
   renderMemory = ({item}) => (
     <MemoryListItem
@@ -90,8 +84,7 @@ export default class MemoriesScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <StatusBar backgroundColor={Colors.statusBar} barStyle="light-content"/>
+      <Screen>
         <Appbar.Header style={styles.header}>
           <Appbar.Content
             title="Memories"
@@ -106,6 +99,7 @@ export default class MemoriesScreen extends React.Component {
         </Appbar.Header>
 
         <FlatList
+          ref={this._memoriesList}
           style={styles.body}
           data={this.state.memories}
           extraData={this.state}
@@ -113,58 +107,18 @@ export default class MemoriesScreen extends React.Component {
           renderItem={this.renderMemory}
         />
 
-        <AddFAB
-          onPress={() => this.props.navigation.navigate('EditMemory')}
-        />
-      </View>
+        <FloatingAddButton />
+      </Screen>
     );
   }
-
-}
-
-function AddFAB(props) {
-  return (
-    <FAB
-      style={styles.addFAB}
-      color={Colors.text.onDark.strong}
-      icon="add"
-      onPress={props.onPress}
-    />
-  );
 }
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
     backgroundColor: Colors.header.light,
     elevation: 0,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
-  },
-  memoryInput: {
-    backgroundColor: Colors.white.light,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-    padding: 12,
-  },
-  textInput: {
-    alignSelf: 'stretch',
-    textAlignVertical: 'top',
-    fontSize: 18,
-    color: Colors.text.default,
-    padding: 6,
-    paddingLeft: 10,
-    backgroundColor: Colors.overlay.black,
-    borderRadius: 3,
-  },
-  addFAB: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: Colors.fab.background,
-    color: Colors.fab.icon,
   },
 });

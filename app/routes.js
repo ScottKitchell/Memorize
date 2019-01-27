@@ -5,6 +5,7 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import { Icon } from './components/generic/icons';
 import MemoriesScreen from './screens/memories';
 import SearchScreen from './screens/search';
+import SearchResultsScreen from './screens/search-results';
 import AccountScreen from './screens/account';
 import EditMemoryScreen from './screens/edit-memory';
 import { Colors } from './styles';
@@ -17,9 +18,8 @@ export const ROUTES = {
     SEARCH: 'Search',
     ACCOUNT: 'Account',
   },
-  EDIT_MEMORY: {
-    toString: ()=>'EditMemory',
-  },
+  EDIT_MEMORY: 'EditMemory',
+  SEARCH_RESULTS: 'SearchResults',
 };
 
 // const TabNavigator = createBottomTabNavigator({
@@ -57,33 +57,30 @@ export const ROUTES = {
 //   <Icon name={`${iconName}${focused? '' : '-outline'}`} size={26} color={tintColor} />
 // )
 
-const tabBarIcon = (iconName) => ({ tintColor, focused }) => (
+const tabBarIcon = (iconName) => ({ tintColor }) => (
   <FeatherIcon name={iconName} size={26} color={tintColor} />
 );
+
 
 const TabNavigator = createMaterialBottomTabNavigator({
   [ROUTES.TABS.MEMORIES]:  {
     screen: MemoriesScreen,
     navigationOptions: {
-      // title: 'Home',
-      // tabBarLabel: I18n.t('homeTabTitle'),
-      // tabBarColor: Colors.primary,
+      tabBarAccessibilityLabel: 'All memories',
       tabBarIcon: tabBarIcon('home'),
     },
   },
   [ROUTES.TABS.SEARCH]:  {
-    screen: SearchScreen,
+    screen: SearchResultsScreen,
     navigationOptions: {
-      // title: 'Search',
-      // tabBarLabel: I18n.t('homeTabTitle'),
-      // tabBarColor: Colors.primary,
+      tabBarAccessibilityLabel: 'Search',
       tabBarIcon: tabBarIcon('search'),
     },
   },
   [ROUTES.TABS.ACCOUNT]: {
     screen: AccountScreen,
     navigationOptions: {
-      // title: 'Account',
+      tabBarAccessibilityLabel: 'User',
       tabBarIcon: tabBarIcon('user'),
     },
   },
@@ -114,10 +111,17 @@ export const AppNavStack = createStackNavigator({
       header: null,
     },
   },
+  [ROUTES.SEARCH_RESULTS]: {
+    screen: SearchResultsScreen,
+    navigationOptions: {
+      title: 'Search Results',
+      header: null,
+    },
+  },
 },
 {
   navigationOptions: {
     header: null,
-    animationEnabled: false,
+    animationEnabled: true,
   },
 });

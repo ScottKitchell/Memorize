@@ -18,7 +18,6 @@ export default class MemoryStore extends AbstractStore {
       return (memory.matches > 0);
     };
     const memories = await this.filter(predicate);
-    console.log(memories);
     return _.sortBy(memories, (memory) => (-1 * memory.matches));
   }
 

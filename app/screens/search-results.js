@@ -1,36 +1,70 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, TextInput, StatusBar } from 'react-native';
+import { StyleSheet, View, TextInput } from 'react-native';
+import { FlatList } from 'react-navigation';
 import _ from 'lodash';
-import MemoryListItem from 'app/components/memory';
-import { MemoryStore, HashtagStore } from 'app/stores';
-import { Colors } from 'app/styles';
-import { FAB, Searchbar, Appbar } from 'react-native-paper';
+import { MemoryStore } from 'app/stores';
 import Screen from 'app/components/screen';
+import FloatingAddButton from 'app/components/add-new-button';
+import MemoryListItem from 'app/components/memory';
+import { Colors } from 'app/styles';
 
-export default class SearchScreen extends React.Component {
+
+export default class SearchResultsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      history: [],
-      tags: [],
-      searchTerm: '',
+      memories: [],
+      // Double space in searchTerm is so componentDidUpdate check will updateSearchResults 
+      // on the first render.
+      searchTerm: ' ', 
     };
   }
 
   componentDidMount() {
-    this.props.navigation.addListener('willFocus', () => {
+    this._screenFocusListener = this.props.navigation.addListener('didFocus', () => {
       this.search(this.getSearchTermFromRoute());
     });
   }
 
+  componentWillUnmount() {
+    this._screenFocusListener.remove();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.searchTerm !== prevState.searchTerm) {
+      this.updateSearchResults();
+    }
+  }
+
   getSearchTermFromRoute = () => this.props.navigation.getParam('search', '');
 
-  UpdateSearch = (searchTerm) => {
-    this.setState({searchTerm}, () => {
-      HashtagStore.search(searchTerm).then(tags => {
-        this.setState({tags});
-      });
-    });
+  toggleFlag = (id) => this.toggle(id, 'flag');
+
+  toggleDone = (id) => this.toggle(id, 'done');
+
+  toggle = (id, attr) => {
+    const memories = _.clone(this.state.memories);
+    const memory = _.find(memories, { id });
+    memory[attr] = !memory[attr];
+    this.setState({ memories }, () => MemoryStore.save(memory));
+  }
+
+  editMemory = (id) => {
+    this.props.navigation.navigate('EditMemory', { id });
+  }
+
+  deleteMemory = (id) => {
+    const memories = _.reject(this.state.memories, { id });
+    this.setState({ memories }, () => MemoryStore.delete(id));
+  }
+
+  search = (searchTerm) => {
+    this.setState({searchTerm});
+  }
+
+  updateSearchResults = () => {
+    MemoryStore.search(this.state.searchTerm)
+    .then(memories => this.setState({memories}));
   }
 
   renderMemory = ({ item }) => (
@@ -51,7 +85,7 @@ export default class SearchScreen extends React.Component {
         <View style={styles.memoryInput}>
           <SearchInput
             value={this.state.searchTerm}
-            autoFocus={(!this.state.searchTerm)}
+            // autoFocus={(!this.state.searchTerm)}
             onChangeText={this.search}
             style={styles.searchInput}
             placeholderTextColor="#CCC"
@@ -66,13 +100,10 @@ export default class SearchScreen extends React.Component {
           renderItem={this.renderMemory}
         />
 
-        <AddFAB
-          onPress={() => this.props.navigation.navigate('EditMemory')}
-        />
+        <FloatingAddButton />
       </Screen>
     );
   }
-
 }
 
 const SearchInput = (props) => (
@@ -84,16 +115,7 @@ const SearchInput = (props) => (
     enablesReturnKeyAutomatically={true}
     placeholder="Search"
     underlineColorAndroid="transparent"
-    {...props}
-  />
-);
-
-const AddFAB = (props) => (
-  <FAB
-    style={styles.addFAB}
-    color={Colors.text.onDark.strong}
-    icon="add"
-    onPress={props.onPress}
+    {...props} 
   />
 );
 
@@ -119,15 +141,7 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     fontSize: 18,
     color: Colors.text.default,
-    // backgroundColor: Colors.overlay.black,
-    backgroundColor: 'red',
+    backgroundColor: Colors.overlay.black,
     borderRadius: 3,
-  },
-  addFAB: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: Colors.fab.background,
-    color: Colors.fab.icon,
   },
 });

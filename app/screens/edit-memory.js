@@ -7,6 +7,7 @@ import {MemoryStore, HashtagStore} from 'app/stores';
 import {Colors} from 'app/styles';
 import _ from 'lodash';
 import Toolbar from 'app/components/generic/toolbar';
+import Screen from 'app/components/screen';
 
 
 const INITIAL_STATE = {
@@ -123,7 +124,7 @@ export default class EditMemoryScreen extends React.Component {
     // if(this.state.hashtagSuggestions.length > 0)
       // console.log(`hashtagSuggestions -`, this.state.hashtagSuggestions);
     return (
-      <View style={styles.container}>
+      <Screen>
         <HeaderAppbar
           title={this.state.isEditing? "Edit Memory" : "New Memory"}
           onBackPress={() => this.closeScreen()}
@@ -203,7 +204,7 @@ export default class EditMemoryScreen extends React.Component {
             </View>
           </Appbar>
         </KeyboardAvoidingView>
-      </View>
+      </Screen>
     );
   }
 }
@@ -225,10 +226,6 @@ function HeaderAppbar(props) {
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
   scrollContainer: {
     flex: 1,
     justifyContent: 'center',
