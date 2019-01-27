@@ -1,12 +1,12 @@
 import React from 'react';
-import {StyleSheet, ToastAndroid, Text, View, TouchableHighlight, TouchableOpacity, Linking} from 'react-native';
+import { StyleSheet, ToastAndroid, Text, View, TouchableHighlight, TouchableOpacity, Linking} from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
-import {SocialText} from './generic/social-text';
-import {Icon, ToggleIcon} from './generic/icons';
-import {Colors} from 'app/styles';
+import { SocialText } from 'app/components/generic/social-text';
+import { Icon, ToggleIcon } from 'app/components/generic/icons';
+import { Colors } from 'app/styles';
 import moment from 'moment';
-import {Appbar} from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 
 export default class MemoryListItem extends React.Component {
   static propTypes = {
